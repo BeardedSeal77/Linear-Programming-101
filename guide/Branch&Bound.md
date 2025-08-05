@@ -84,14 +84,41 @@ For a fractional variable xⱼ = k.f (where k is integer part, f is fractional p
    - Right branch: xⱼ ≥ k+1 → xⱼ - eₙ = k+1 (subtract excess)
 4. **Check for basic variable conflicts** (see Conflict Resolution Rules below)
 
-### Rule 2a: Constraint Addition and Conflict Resolution
-**When adding constraint to optimal tableau:**
+### Rule 2a: Sub-Problem Generation Procedure
+**Complete step-by-step process for creating sub-problems:**
 
-**Case 1: Variable is Non-Basic**
-- Simply add new constraint row to tableau
+**STEP 1: Identify the Fractional Variable**
+1. **Examine current LP relaxation solution**
+2. **List all variables with fractional values**
+3. **Apply branching variable selection rule** (closest to 0.5)
+4. **Document selection rationale**
+
+**STEP 2: Determine the Bounds**
+For fractional variable **xⱼ = k.f** (where k = integer part, f = fractional part):
+- **Floor value**: k = ⌊xⱼ⌋ (largest integer ≤ xⱼ)
+- **Ceiling value**: k+1 = ⌈xⱼ⌉ (smallest integer ≥ xⱼ)
+- **Example**: If x₁ = 3.75, then Floor = 3, Ceiling = 4
+
+**STEP 3: Create Two Sub-Problems**
+**Sub-problem 1 (Left branch)**: Add constraint **xⱼ ≤ k**
+**Sub-problem 2 (Right branch)**: Add constraint **xⱼ ≥ k+1**
+
+**STEP 4: Convert to Standard Form**
+- **Left branch**: xⱼ ≤ k → xⱼ + sₙ = k (add slack variable sₙ)
+- **Right branch**: xⱼ ≥ k+1 → xⱼ - eₙ = k+1 (subtract excess variable eₙ)
+
+**STEP 5: Inherit Parent Tableau**
+- **Each sub-problem starts with the current optimal tableau**
+- **Add one new constraint row for the branching constraint**
+- **All original constraints remain unchanged**
+
+**STEP 6: Handle Variable Status**
+**Case A: Variable is Non-Basic**
+- Add new constraint row directly to tableau
 - No conflicts occur
+- Proceed with simplex/dual simplex
 
-**Case 2: Variable is Basic (CONFLICT SITUATION)**
+**Case B: Variable is Basic (CONFLICT SITUATION)**
 **Conflict Resolution Procedure:**
 1. **Identify conflict**: New constraint involves basic variable
 2. **Calculate violation**: Current value vs. constraint bound
@@ -106,6 +133,109 @@ For a fractional variable xⱼ = k.f (where k is integer part, f is fractional p
    - For xⱼ ≤ k: [0, 0, ..., -aᵢₚ, ..., +1] = k - bᵢ
    - For xⱼ ≥ k+1: [0, 0, ..., +aᵢₚ, ..., -1] = bᵢ - (k+1)
 5. **Sign check**: If RHS < 0, dual simplex required
+
+### Rule 2b: Sub-Problem Tableau Generation Process
+**Detailed process for creating new tableaux from parent tableau:**
+
+**STARTING POINT: Parent Optimal Tableau (T-3)**
+| T-3 | x₁ | x₂ | s₁ | s₂ | rhs |
+|-----|----|----|----|----|-----|
+| z   | 0  | 0  | 1¼ | ¾  | 41¼ |
+| 1   | 0  | 1  | 2¼ | -¼ | 2¼  |
+| 2   | 1  | 0  | -1¼| ¼  | 3¾  |
+
+**Current solution**: x₁ = 3¾ (basic in row 2), x₂ = 2¼ (basic in row 1)
+
+---
+
+### SUB-PROBLEM 1: x₁ ≤ 3
+
+**STEP 1: Identify the Basic Variable Constraint**
+- x₁ is basic in **row 2** with value 3¾
+- Row 2 equation: x₁ - 1¼s₁ + ¼s₂ = 3¾
+
+**STEP 2: Add New Constraint**
+- New constraint: x₁ ≤ 3 → x₁ + s₃ = 3
+
+**STEP 3: Substitute Basic Variable Expression**
+- From row 2: x₁ = 3¾ + 1¼s₁ - ¼s₂
+- Substitute into new constraint: (3¾ + 1¼s₁ - ¼s₂) + s₃ = 3
+- Rearrange: 3¾ + 1¼s₁ - ¼s₂ + s₃ = 3
+- Solve for s₃: s₃ = 3 - 3¾ - 1¼s₁ + ¼s₂ = -¾ - 1¼s₁ + ¼s₂
+
+**STEP 4: Create New Constraint Row**
+- Since s₃ = -¾ - 1¼s₁ + ¼s₂, we have:
+- **New row 3**: [0, 0, -1¼, ¼, -1] = -¾
+
+**STEP 5: Build Complete Sub-Problem Tableau**
+| T-4 | x₁ | x₂ | s₁ | s₂ | s₃ | rhs |
+|-----|----|----|----|----|----|----|
+| z   | 0  | 0  | 1¼ | ¾  | 0  | 41¼ |
+| 1   | 0  | 1  | 2¼ | -¼ | 0  | 2¼  |
+| 2   | 1  | 0  | -1¼| ¼  | 0  | 3¾  |
+| 3   | 0  | 0  | -1¼| ¼  | -1 | -¾  |
+
+**STEP 6: Apply Dual Simplex (RHS < 0)**
+- Row 3 has RHS = -¾ < 0, violates feasibility
+- Apply dual simplex method to restore feasibility
+
+---
+
+### SUB-PROBLEM 2: x₁ ≥ 4
+
+**STEP 1: Identify the Basic Variable Constraint**
+- x₁ is basic in **row 2** with value 3¾
+- Row 2 equation: x₁ - 1¼s₁ + ¼s₂ = 3¾
+
+**STEP 2: Add New Constraint**  
+- New constraint: x₁ ≥ 4 → x₁ - e₃ = 4
+
+**STEP 3: Substitute Basic Variable Expression**
+- From row 2: x₁ = 3¾ + 1¼s₁ - ¼s₂
+- Substitute into new constraint: (3¾ + 1¼s₁ - ¼s₂) - e₃ = 4
+- Rearrange: 3¾ + 1¼s₁ - ¼s₂ - e₃ = 4
+- Solve for e₃: e₃ = 3¾ + 1¼s₁ - ¼s₂ - 4 = -¼ + 1¼s₁ - ¼s₂
+
+**STEP 4: Create New Constraint Row**
+- Since e₃ = -¼ + 1¼s₁ - ¼s₂, we have:
+- **New row 3**: [0, 0, 1¼, -¼, -1] = -¼
+
+**STEP 5: Build Complete Sub-Problem Tableau**
+| T-4 | x₁ | x₂ | s₁ | s₂ | e₃ | rhs |
+|-----|----|----|----|----|----|----|
+| z   | 0  | 0  | 1¼ | ¾  | 0  | 41¼ |
+| 1   | 0  | 1  | 2¼ | -¼ | 0  | 2¼  |
+| 2   | 1  | 0  | -1¼| ¼  | 0  | 3¾  |
+| 3   | 0  | 0  | 1¼ | -¼ | -1 | -¼  |
+
+**STEP 6: Apply Dual Simplex (RHS < 0)**
+- Row 3 has RHS = -¼ < 0, violates feasibility
+- Apply dual simplex method to restore feasibility
+
+---
+
+### KEY TABLEAU GENERATION RULES:
+
+**Rule TG1: Copy Parent Tableau**
+- All original rows remain unchanged initially
+- Add new column for new variable (s₃ or e₃)
+- Fill new column with zeros except for new constraint row
+
+**Rule TG2: Create New Constraint Row**
+- Find row where branching variable is basic
+- Extract the expression for that variable
+- Substitute into new constraint
+- Form new row with coefficients
+
+**Rule TG3: Handle Negative RHS**
+- If new constraint row has RHS < 0, apply dual simplex
+- This restores feasibility while maintaining optimality
+- Continue until feasible solution found
+
+**Rule TG4: Variable Status Update**
+- Basic variables from parent remain basic (initially)
+- New variable (s₃ or e₃) becomes non-basic
+- Dual simplex may change variable status
 
 ### Rule 3: Fathoming Conditions
 A node is **fathomed** (eliminated) if any of these conditions are met:
