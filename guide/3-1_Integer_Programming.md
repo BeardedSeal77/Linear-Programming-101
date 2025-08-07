@@ -33,6 +33,24 @@ Many real-world problems require discrete decisions:
 | **Computational Complexity** | Polynomial time | NP-hard |
 | **Optimal Solution** | At vertices of polytope | At integer points |
 
+### Computational Complexity Comparison
+| Problem Size | LP Solution Time | IP Solution Time | Difficulty Ratio |
+|--------------|------------------|------------------|------------------|
+| Small (10-50 variables) | Seconds | Seconds-Minutes | 10x - 100x |
+| Medium (100-500 variables) | Minutes | Minutes-Hours | 100x - 1000x |
+| Large (1000+ variables) | Minutes-Hours | Hours-Days | 1000x+ |
+
+**Key Insight**: IP solution time grows **exponentially** with problem size, while LP grows **polynomially**.
+
+### When Integrality Matters Most
+| Industry | Application | Impact of Non-Integer Solution |
+|----------|-------------|-------------------------------|
+| **Manufacturing** | Production quantities | Cannot produce 2.3 machines |
+| **Logistics** | Vehicle routing | Cannot use 1.7 trucks |
+| **Finance** | Project selection | Cannot invest in 0.4 of a project |
+| **Healthcare** | Staff scheduling | Cannot hire 15.6 nurses |
+| **Telecommunications** | Network design | Cannot build 0.8 of a cell tower |
+
 ---
 
 ## Types of Integer Programming Problems
@@ -68,10 +86,45 @@ Subject to:
   x₁, x₂, x₃ ∈ {0, 1}
 ```
 
-### Common Binary Applications
-- **Project selection**: xᵢ = 1 if project i is selected, 0 otherwise
-- **Facility location**: yⱼ = 1 if facility is built at location j, 0 otherwise
-- **Assignment problems**: zᵢⱼ = 1 if worker i assigned to job j, 0 otherwise
+### Business Applications by IP Type
+
+#### Pure Integer Programming (PIP) - Real-World Examples
+**Manufacturing Sector:**
+- **Production planning**: Number of units to produce (must be whole)
+- **Batch sizing**: Number of production batches (discrete quantities)
+- **Machine scheduling**: Integer time slots for operations
+
+**When to use PIP:**
+- All decision variables represent indivisible quantities
+- High setup costs make fractional solutions impractical
+- Regulatory requirements mandate integer values
+
+#### Mixed Integer Programming (MIP) - Business Cases
+**Supply Chain Management:**
+- **Facility location + capacity**: Binary location decisions with continuous flow variables
+- **Production + inventory**: Integer production levels with continuous inventory
+- **Transportation**: Binary route selection with continuous shipment quantities
+
+**When to use MIP:**
+- Some decisions are binary (yes/no) while others are continuous
+- Combining strategic (integer) and operational (continuous) decisions
+- Different decision variables have different practical constraints
+
+#### Binary Integer Programming (BIP) - Strategic Applications
+**Project Portfolio Management:**
+- **Capital budgeting**: xᵢ = 1 if project i is funded, 0 otherwise
+- **Technology selection**: yⱼ = 1 if technology j is adopted, 0 otherwise
+- **Mergers & Acquisitions**: zₖ = 1 if company k is acquired, 0 otherwise
+
+**Facility and Network Design:**
+- **Location selection**: wᵢ = 1 if facility built at location i, 0 otherwise
+- **Network topology**: eᵢⱼ = 1 if link between nodes i and j exists, 0 otherwise
+- **Service deployment**: sⱼ = 1 if service offered at location j, 0 otherwise
+
+**When to use BIP:**
+- All-or-nothing decisions dominate the problem
+- High fixed costs make partial solutions impractical
+- Strategic decisions with no middle ground
 
 ---
 
@@ -275,37 +328,62 @@ Subject to:
 - New constraints: x₁ + x₂ ≤ 6, 9x₁ + 5x₂ ≤ 45, x₂ ≥ 3
 - Solution: x₁ = 3.33, x₂ = 3, z = 41.67
 
-#### Step 4: Compare Solutions
-- **Branch A**: x₁ = 4.44, x₂ = 2, z = 45.56 (x₂ integer ✓)
-- **Branch B**: x₁ = 3.33, x₂ = 3, z = 41.67 (x₂ integer ✓)
-
-#### Step 5: Optimal Solution
-**Best integer solution**: x₁ = 4.44 tables, x₂ = 2 chairs
-**Maximum profit**: z = R45.56
-
-### Business Interpretation
-- **Produce**: 4.44 tables and 2 chairs
-- **Resource usage**: 
-  - Labour: 4.44 + 2 = 6.44 hours (exceeds by 0.44 hours)
-  - Wood: 9(4.44) + 5(2) = 49.96 m² (exceeds by 4.96 m²)
-
-**Note**: Solution needs feasibility check - constraints are violated!
-
-#### Corrected Analysis
-Let's resolve properly:
+#### Step 4: Solve Branch Subproblems Correctly
 
 **Branch A** (x₂ ≤ 2):
-- Constraints: x₁ + x₂ ≤ 6, 9x₁ + 5x₂ ≤ 45, x₂ ≤ 2
-- At x₂ = 2: x₁ + 2 ≤ 6 → x₁ ≤ 4
-- At x₂ = 2: 9x₁ + 10 ≤ 45 → x₁ ≤ 3.89
-- **Optimal**: x₁ = 3.89, x₂ = 2, z = 8(3.89) + 5(2) = 41.11
+- **Constraints**: 
+  - x₁ + x₂ ≤ 6 (labour)
+  - 9x₁ + 5x₂ ≤ 45 (wood)
+  - x₂ ≤ 2 (branching constraint)
+  - x₁, x₂ ≥ 0
+
+- **Solution Process**:
+  - At x₂ = 2: labour constraint becomes x₁ + 2 ≤ 6 → x₁ ≤ 4
+  - At x₂ = 2: wood constraint becomes 9x₁ + 10 ≤ 45 → x₁ ≤ 3.89
+  - **Binding constraint**: Wood (more restrictive)
+  - **Optimal**: x₁ = 3.89, x₂ = 2
+  - **Objective value**: z = 8(3.89) + 5(2) = 31.12 + 10 = **41.12**
 
 **Branch B** (x₂ ≥ 3):
-- At x₂ = 3: x₁ + 3 ≤ 6 → x₁ ≤ 3  
-- At x₂ = 3: 9x₁ + 15 ≤ 45 → x₁ ≤ 3.33
-- **Optimal**: x₁ = 3, x₂ = 3, z = 8(3) + 5(3) = 39
+- **Constraints**: 
+  - x₁ + x₂ ≤ 6 (labour)
+  - 9x₁ + 5x₂ ≤ 45 (wood)
+  - x₂ ≥ 3 (branching constraint)
+  - x₁, x₂ ≥ 0
 
-**Final Optimal Solution**: x₁ = 3.89 tables, x₂ = 2 chairs, z = R41.11
+- **Solution Process**:
+  - At x₂ = 3: labour constraint becomes x₁ + 3 ≤ 6 → x₁ ≤ 3
+  - At x₂ = 3: wood constraint becomes 9x₁ + 15 ≤ 45 → x₁ ≤ 3.33
+  - **Binding constraint**: Labour (more restrictive)
+  - **Optimal**: x₁ = 3, x₂ = 3
+  - **Objective value**: z = 8(3) + 5(3) = 24 + 15 = **39**
+
+#### Step 5: Compare and Select Optimal Solution
+
+| Branch | Solution | Objective Value | Feasibility Check |
+|--------|----------|----------------|-------------------|
+| **A** | x₁ = 3.89, x₂ = 2 | z = 41.12 | ✓ All constraints satisfied |
+| **B** | x₁ = 3, x₂ = 3 | z = 39.00 | ✓ All constraints satisfied |
+
+**Verification of Branch A**:
+- Labour used: 3.89 + 2 = 5.89 ≤ 6 ✓
+- Wood used: 9(3.89) + 5(2) = 35.01 + 10 = 45.01 ≈ 45 ✓ (within rounding)
+- x₂ = 2 is integer ✓
+- x₁ = 3.89 can be fractional (problem allows this)
+
+#### Step 6: Optimal Solution
+**Best mixed-integer solution**: 
+- **Tables**: x₁ = 3.89 ≈ **3.89 tables**
+- **Chairs**: x₂ = **2 chairs** (integer as required)
+- **Maximum profit**: z = **R41.12**
+
+### Business Interpretation
+- **Production plan**: Manufacture 3.89 tables and exactly 2 chairs
+- **Resource utilization**: 
+  - Labour: 5.89/6 = **98.2% utilized**
+  - Wood: 45.01/45 = **100% utilized** (fully binding)
+- **Fractional production**: 3.89 tables could represent 3 complete tables plus 0.89 of a table in progress
+- **Practical implementation**: Start 4 tables, complete 3, leaving the 4th 89% finished
 
 ---
 
