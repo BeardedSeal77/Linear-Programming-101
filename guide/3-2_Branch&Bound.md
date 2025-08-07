@@ -232,14 +232,99 @@ New constraint - Original basic row = Conflict-free row
 - Proper tableau structure restored
 - Can now apply dual simplex to negative RHS
 
-**Detailed steps for basic variable xⱼ in row i:**
-1. **Original row i**: [aᵢ₁, aᵢ₂, ..., aᵢₙ] = bᵢ
-2. **New constraint**: xⱼ ≤ k (or ≥ k+1)
-3. **Substitution**: Since xⱼ = bᵢ - Σ(aᵢₚ × xₚ), substitute into constraint
-4. **New row formation**: 
-   - For xⱼ ≤ k: [0, 0, ..., -aᵢₚ, ..., +1] = k - bᵢ
-   - For xⱼ ≥ k+1: [0, 0, ..., +aᵢₚ, ..., -1] = bᵢ - (k+1)
-5. **Sign check**: If RHS < 0, dual simplex required
+#### General Formula for Any Basic Variable
+
+**For basic variable xⱼ in row i with tableau row [aᵢ₁, aᵢ₂, ..., aᵢₙ] = bᵢ:**
+
+**CASE 1: Adding constraint xⱼ ≤ k**
+1. **Express basic variable**: xⱼ = bᵢ - Σ(aᵢₚ × xₚ) for all non-basic variables xₚ
+2. **Substitute into constraint**: (bᵢ - Σ(aᵢₚ × xₚ)) + sₙ = k
+3. **Rearrange**: Σ(aᵢₚ × xₚ) + sₙ = bᵢ - k
+4. **New tableau row**: [0, 0, ..., aᵢₚ, ..., 1] = bᵢ - k
+5. **Key insight**: Coefficients of non-basic variables **keep same sign**, xⱼ coefficient becomes 0
+
+**CASE 2: Adding constraint xⱼ ≥ k+1**
+1. **Express basic variable**: xⱼ = bᵢ - Σ(aᵢₚ × xₚ)
+2. **Substitute into constraint**: (bᵢ - Σ(aᵢₚ × xₚ)) - eₙ = k+1
+3. **Rearrange**: -Σ(aᵢₚ × xₚ) - eₙ = k+1 - bᵢ
+4. **Multiply by -1**: Σ(aᵢₚ × xₚ) + eₙ = bᵢ - (k+1)
+5. **New tableau row**: [0, 0, ..., aᵢₚ, ..., 1] = bᵢ - (k+1)
+6. **Key insight**: Same coefficient pattern, but RHS = bᵢ - (k+1)
+
+#### Quick Reference for Conflict Resolution
+
+**Step-by-Step Checklist:**
+1. [ ] **Identify if branching variable is basic** in current tableau
+2. [ ] **If basic, note the row number** where coefficient = 1
+3. [ ] **Copy that row's coefficients** (excluding the branching variable column)
+4. [ ] **Create new constraint row**: 
+   - Set branching variable coefficient = 0
+   - Copy other coefficients with same signs
+   - Add new slack/excess variable with coefficient = 1
+   - Calculate RHS = current_value - constraint_bound
+5. [ ] **Add new row to tableau**
+6. [ ] **Check RHS sign**: If negative, apply dual simplex
+
+#### Worked Example with Complete Calculations
+
+**Given Tableau (T-3):**
+| T-3 | x₁ | x₂ | s₁  | s₂  | s₃  | rhs  |
+|-----|----|----|-----|-----|-----|------|
+| z   | 0  | 0  | 1¼  | ¾   | 0   | 41¼  |
+| 1   | 0  | 1  | 2¼  | -¼  | 0   | 2¼   |
+| 2   | 1  | 0  | -1¼ | ¼   | 0   | 3¾   |
+| 3   | 0  | 0  | 0   | 0   | 1   | 0    |
+
+**Adding constraint: x₁ ≤ 3**
+
+**Step 1:** x₁ is basic in row 2 with current value 3¾
+
+**Step 2:** Express x₁ from row 2:
+x₁ = 3¾ + 1¼s₁ - ¼s₂  (from row: [1, 0, -1¼, ¼, 0] = 3¾)
+
+**Step 3:** Substitute into new constraint:
+x₁ + s₄ = 3
+(3¾ + 1¼s₁ - ¼s₂) + s₄ = 3
+1¼s₁ - ¼s₂ + s₄ = 3 - 3¾ = -¾
+
+**Step 4:** New tableau row:
+[0, 0, 1¼, -¼, 0, 1, -¾]
+
+**Step 5:** Complete updated tableau:
+| T-4 | x₁ | x₂ | s₁  | s₂  | s₃ | s₄ | rhs  |
+|-----|----|----|-----|-----|----|----|------|
+| z   | 0  | 0  | 1¼  | ¾   | 0  | 0  | 41¼  |
+| 1   | 0  | 1  | 2¼  | -¼  | 0  | 0  | 2¼   |
+| 2   | 1  | 0  | -1¼ | ¼   | 0  | 0  | 3¾   |
+| 3   | 0  | 0  | 0   | 0   | 1  | 0  | 0    |
+| 4   | 0  | 0  | 1¼  | -¼  | 0  | 1  | -¾   |
+
+**Step 6:** RHS = -¾ < 0, so apply dual simplex method
+
+**This tableau is now ready for dual simplex to resolve the infeasibility!**
+
+#### Summary: Conflict Resolution in Branch & Bound
+
+**The Problem:** Adding branching constraints when the variable is basic creates "two 1's" in the same column, violating simplex tableau structure.
+
+**The Solution:** Transform the new constraint to eliminate the conflict while preserving mathematical equivalence.
+
+**Key Principles:**
+1. **Never change the original tableau rows** - they represent the current optimal solution
+2. **Transform only the new constraint row** to avoid conflicts
+3. **Maintain mathematical equivalence** through substitution or row operations
+4. **Always check RHS sign** after conflict resolution - negative values require dual simplex
+
+**Quick Mental Check:**
+- **Is branching variable basic?** → Yes = Conflict, No = No conflict
+- **After conflict resolution, does branching variable have exactly one coefficient = 1?** → Must be yes
+- **Are you ready for next simplex phase?** → Check RHS signs and optimality
+
+**Common Student Mistakes:**
+1. **Adding constraint directly** when variable is basic → Creates invalid tableau
+2. **Changing original rows** instead of transforming new constraint → Loses optimal solution
+3. **Wrong substitution signs** → Check algebra carefully
+4. **Forgetting to check RHS signs** → Missing the need for dual simplex
 
 ### Rule 2b: Sub-Problem Tableau Generation Process
 **Detailed process for creating new tableaux from parent tableau:**
@@ -843,9 +928,16 @@ Subject to:
 
 #### Manual Calculation Process
 - **Copy parent tableau** exactly to new worksheet for each sub-problem
-- **Add new constraint row** by hand at bottom of tableau
-- **Resolve conflicts manually** using row operations (see sensitivity analysis guide)
-- **Apply dual simplex by hand** if RHS becomes negative
+- **Check for conflicts**: Is branching variable basic in parent tableau?
+- **If conflict exists**: Apply conflict resolution process:
+  1. **Extract basic variable expression** from parent tableau
+  2. **Substitute into new constraint** 
+  3. **Create conflict-free row** with branching variable coefficient = 0
+  4. **Add row to tableau**
+- **If no conflict**: Add new constraint row directly
+- **Apply appropriate simplex method**:
+  - **RHS < 0**: Use dual simplex
+  - **RHS ≥ 0**: Check optimality, use primal simplex if needed
 - **Document each step** with clear annotations
 
 #### Tracking Progress Manually

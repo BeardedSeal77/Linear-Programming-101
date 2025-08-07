@@ -133,7 +133,7 @@ x₁ + x₂ + s₂ = 7       (from x₁ + x₂ ≤ 7)
 ### Step 2: Select Pivot Row (Leaving Variable)
 - **Rule**: Choose the row with the **most negative RHS value**
 - **Reason**: This gives the biggest improvement toward feasibility
-- **Tie-breaking**: Choose arbitrarily or use smallest subscript
+- **Tie-breaking**: Choose arbitrarily or use smallest subscript *note, use the ratio test on the column, then choose the smallest subscript
 
 ### Step 3: Select Pivot Column (Entering Variable) - Manual Dual Ratio Test
 
