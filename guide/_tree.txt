@@ -1,0 +1,26 @@
+Linear Programming Guide Tree
+=============================
+
+1. Canonical Forms (Foundation)
+   └── 1-1_LP_Canonical_Forms_Walkthrough.md
+
+2. Simplex Methods (Core Algorithms)
+   ├── 2-1_Dual_Simplex_Method.md
+   ├── 2-2_Primal_Simplex_Method.md
+   └── 2-3_Adding_Constraints_Sensitivity_Analysis.md
+       ──> Optimal Solution Analysis
+
+3. Advanced Techniques (Optimization Extensions)
+   ├── 3-1_Integer_Programming.md
+   ├── 3-2_Branch&Bound.md
+   │   └── Optimal Integer Solutions
+   └── 3-3_Cutting_Plane.md
+       └── Systematic Constraint Addition for Integer Solutions
+
+4. Specialized Applications (Binary & Assignment Problems)
+   ├── 4-1_Task_Assignment.md
+   │   └── Hungarian Algorithm for One-to-One Assignments
+   └── 4-2_Capital_Budgeting.md
+       └── 0-1 Knapsack Problems with Logical Constraints
+
+Complete Coverage Achieved: Foundation → Core Methods → Advanced Techniques → Specialized Applications

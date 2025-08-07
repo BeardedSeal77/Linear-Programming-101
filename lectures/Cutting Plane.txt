@@ -1,0 +1,361 @@
+📐 Cutting Plane Method for Integer Linear Programming
+
+The cutting plane method is a solution method for integer linear programming problems. It involves:
+
+
+
+
+
+Relaxing the integer constraint and solving as a regular linear programming problem.
+
+
+
+Introducing cutting constraints to refine the feasible region and find the optimal integer solution.
+
+📖 Example 10.4 from Textbook
+
+Let's explore example 10.4 from the textbook "Introduction to Linear Programming Problem".
+
+Initial Relaxation and Simplex Method
+
+First, relax the integer variable assumption and solve using the simplex method. The optimal table is reached through the simplex method. If you're unfamiliar with the simplex method, review the video "How to solve a linear programming problem using the simplex method."
+
+Identifying Fractional Variables
+
+Identify variables with non-integer values on the right-hand side of the optimal table. In this example, both  and  have fractional values. Choose one arbitrarily (the number of iterations may vary depending on your choice). Let's choose .
+
+Writing the Equation from the Optimal Table
+
+Write the equation corresponding to the row of the chosen variable () from the optimal table.
+
+
+
+Separating Integer and Fractional Parts
+
+Rewrite the equation, separating fractional values into integer and decimal parts:
+
+
+
+
+
+Note that if a coefficient is positive and less than 1, you don't need to separate it.
+
+Isolating Integer Components
+
+Move integer values and variables with integer coefficients to the left-hand side and fractional values/variables to the right-hand side.
+
+
+
+Creating the Cut Equation
+
+Recognize that since  and  are non-negative, the right-hand side is always less than or equal to .
+
+
+
+Since we assume all variables are integers, the highest integer closest to  is 0. Therefore, the cut equation is:
+
+
+
+📈 Adding the Cut Equation to the Optimal Table
+
+The new cut equation must be added to the optimal table to find a new solution.
+
+Standardizing the Cut Equation
+
+Standardize the cut equation by moving the constant to the right-hand side and adding a slack variable ().
+
+
+
+Incorporating into the Optimal Table
+
+Add a new row and column for the new basic variable, .
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+RHS
+
+
+
+
+
+
+
+
+
+1
+
+
+
+0
+
+
+
+
+
+
+
+
+
+
+
+0
+
+
+
+
+
+
+
+
+
+
+
+
+
+0
+
+
+
+1
+
+
+
+
+
+
+
+
+
+
+
+0
+
+
+
+
+
+
+
+
+
+
+
+
+
+0
+
+
+
+0
+
+
+
+
+
+
+
+
+
+
+
+1
+
+
+
+
+
+
+
+
+
+Z (row)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Ensure all basic variables are in echelon form. Check for optimal conditions (positive values for maximization) and a negative value on the right-hand side.
+
+Dual Simplex Method
+
+Use the dual simplex method to find a new solution. Select the most negative value in the right-hand side and perform the minimum test on the negative values of the pivot row. (Refer to the video on solving linear programming problems using the dual simplex method if needed).
+
+In this case,  is the most negative value. The minimum test involves dividing the coefficients in the Z row by the absolute values of the corresponding negative coefficients in the  row.
+
+Based on the min test,  becomes the pivot column. Iterate the table to the next table, making the pivot value (-2/3) equal to 1 and all other elements in the pivot column equal to 0.
+
+Iteration and New Cutting Constraints
+
+If nothing in the right-hand side becomes an integer value, continue adding cutting constraints until all right-hand side values are integers. Choose another constraint (e.g., the second constraint) to generate a new cutting constraint.
+
+✂️ Generating a Cutting Constraint for the Second Equation
+
+Write down the equation related to the second constraint of the problem:
+
+
+
+Separating Integer and Decimal Values
+
+Write the fractional values as a summation of an integer and a decimal value:
+
+
+
+Isolating Integer Components
+
+Bring all the integer values in addition with variables with integer coefficient to the left-hand side and all the fractional values and variables with the fractional values to the right-hand side.
+
+
+
+Creating the Cutting Equation
+
+Since  and  are always greater than or equal to 0, this term is always going to be less than , because we are always deducting something from  and then we can write this as less than or equal to .
+
+
+
+The highest integer less than  is 0. Thus, the cut equation becomes:
+
+
+
+Standardizing and Adding to the Optimal Table
+
+Put that  to the left- hand side and standardize this constraint by adding a slack variable.
+
+
+
+Add this constraint to the optimal table, introducing a new slack variable .
+
+⚙️ Iteration and Final Solution
+
+Add the new constraint to the optimal table. Check for optimality (positive values in the Z row) and a negative value on the right-hand side to proceed with the dual simplex method.
+
+If the right-hand side values are all integers, the solution is reached. In this example, the final solution is:
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Cutting Plane Method Results and Limitations 🚧
+
+In the previous example, the optimal solution was found to be:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+The slack variables  and , which are non-basic, have a value of 0. The optimal value of the objective function is 27. This can be verified by substituting the values of the decision variables ( and ) into the objective function.
+
+Limitations of Fractional Cuts
+
+
+
+
+
+The fractional cuts method requires all variables to be integers. It does not allow fractional values for slack or excess variables.
+
+
+
+
+
+For example, if  and  are integers (e.g., 2 and 1), the final solution will not be reached unless all variables have integer values.
+
+
+
+If an equation requires a fractional  for integer solutions of  and , the cutting plane method may deem the solution infeasible because fractional values for  are not allowed.
+
+Resolving the Issue
+
+
+
+
+
+Multiply both sides of the equation by an appropriate value to ensure all coefficients are integers.
+
+
+
+
+
+For example, given an equation, multiplying both sides by 6 may yield an equation where all variables, including slack variables, can have integer values. However, this can lead to very large numbers.
+
+
+
+Use mixed cuts, which restrict the integer assumption to a subset of variables.
+
+
+
+
+
+Assume only  and  must be integers, while  can be fractional.
+
+
+
+For more information, refer to Taha 1975, pages 198-202.

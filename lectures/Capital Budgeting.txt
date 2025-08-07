@@ -1,0 +1,481 @@
+
+The study guide includes all the week's work up to the day before the exam, including material from previous weeks.
+📊 Capital Budgeting
+Core Concept 💡
+Capital budgeting involves determining the best investments to make, given certain inputs and constraints.
+It's about making choices among different investments to achieve the best possible outcome, often measured by net present value.
+Decision Variables 🧮
+Decision variables are used to represent whether to invest in specific opportunities.
+The goal is to optimize the net present value of investments, subject to certain limitations or restrictions.
+In the example discussed, there are four investment options, so there are four decision variables, one for each investment.
+These decision variables are binary:
+1 = invest
+0 = do not invest
+Objective Function 🎯
+The objective function seeks to maximize the total net present value obtained from the selected investments.
+The objective function is a mathematical expression that combines the decision variables with the net present values of each investment.
+For example, if the net present values for four investments are $16,000, $12,000, $18,000, and $14,000 respectively, the objective function could be represented as:
+*   $x_1$, $x_2$, $x_3$, $x_4$ are binary decision variables indicating whether to invest in investment 1, 2, 3, or 4, respectively.
+Net Present Value (NPV) Explained 💰
+Net Present Value (NPV): The current value of an investment's expected income after costs. It represents what you're getting out of an investment.
+Investment Decisions and Constraints 💰
+Net Present Value (NPV) and Investment Choices
+Each investment has a net present value (NPV), such as 22 (remember to multiply by 1000 for the final value).
+We use binary variables (0 or 1) to represent investment decisions.
+1 indicates investing in an investment.
+0 indicates not investing.
+Example:
+If , we are not investing in investment 3.
+If , we are investing in investment 4.
+The total NPV is calculated by summing the NPVs of the chosen investments (e.g., 30), remembering to multiply by 1000.
+Maximization and Constraints
+In a maximization problem (like maximizing NPV), if there are no constraints, all decision variables () will be 1.
+In a minimization problem, all decision variables would be 0 if there are no constraints.
+In realistic scenarios, there are typically constraints that limit investment choices.
+Cash Outflow Constraints 💸
+Each investment requires a certain cash outflow at the present time.
+We have a limited amount available for investment (e.g., $14,000).
+The constraint ensures that the total cash outflow for chosen investments does not exceed the available amount.
+The constraint is represented as: 
+The coefficients in the constraint represent the amounts required for each investment.
+Linear Programming (LP) Formulation ✍️
+The LP formulation includes:
+Decision variables ().
+Objective function (maximize NPV).
+Constraints (cash outflow limit, logical constraints).
+Logical Binary Constraints 🧠
+These constraints add logical conditions to the investment decisions.
+Example to Google: logical binary constraints.
+"At Most" Constraints 🧐
+Consider a constraint like: "Stocks and bonds can invest in at most two investments."
+The constraint is set up using decision variables: 
+This constraint limits the number of investments to a maximum of two.
+Examples of True/False Evaluation:
+
+True/False
+1
+1
+1
+1
+4
+False
+0
+0
+0
+0
+0
+True
+1
+1
+0
+0
+2
+True
+1
+0
+1
+0
+2
+True
+When setting up IPs, focus on the requirements rather than specific solutions.
+"If-Then" Constraints 🤔
+Consider a constraint like: "If they invest in investment 2, they must also invest in investment 1."
+ represents investment 2.
+ represents investment 1.
+We need to consider different combinations of  and  to determine what should be true or false.
+Combinations for  and :
+
+0
+0
+0
+1
+1
+0
+1
+1
+The number of combinations is calculated as , where n is the number of binary variables.
+🔢 Combinations and Constraints
+When dealing with multiple variables, the number of possible combinations increases. Here's how to calculate the number of combinations:
+Given n binary variables (each variable can be either 0 or 1), the total number of combinations is .
+For example, with three variables, there are  possible combinations.
+Setting Up Constraints
+After determining the possible combinations, we need to define constraints to determine which combinations are allowed (true) and which are not (false).
+Example Scenario: Investment decisions with constraints.
+Suppose there are two investments, investment 1 (x1) and investment 2 (x2). The constraint is: "If they invest in investment 2, they must also invest in investment 1."
+List all combinations:
+x1 (Investment 1)
+x2 (Investment 2)
+0
+0
+1
+0
+0
+1
+1
+1
+Determine allowed combinations:
+Not investing in either (0, 0): Allowed (True)
+Investing in investment 1 but not investment 2 (1, 0): Allowed (True)
+Investing in investment 2 but not investment 1 (0, 1): Not allowed (False)
+Investing in both (1, 1): Allowed (True)
+Set up a constraint:
+We need to find a constraint that satisfies all the "True" conditions and rejects the "False" condition.
+Try using inequality signs (≤, ≥) first. If that doesn't work, try addition or subtraction.
+In this case,  works.
+ (True)
+ (True)
+ (False)
+ (True)
+Convert to standard form: 
+➕ Applying Constraints to a New Scenario
+Consider investments 2 (x2) and 4 (x4). The constraint is: "If they invest in investment 2, they cannot invest in investment 4."
+List combinations:
+x2 (Investment 2)
+x4 (Investment 4)
+0
+0
+0
+1
+1
+0
+1
+1
+Determine allowed combinations:
+Not investing in either (0, 0): Allowed (True)
+Investing in investment 4 but not investment 2 (0, 1): Allowed (True)
+Investing in investment 2 but not investment 4 (1, 0): Allowed (True)
+Investing in both (1, 1): Not allowed (False)
+Set up a constraint:
+Try :
+ (True)
+ (False)
+This approach fails because it doesn't work for all conditions.
+When simple inequalities don't suffice, consider using addition or subtraction in combination with inequalities to create a constraint.
+Integer Programming Constraints 🧩
+When setting up constraints in integer programming, it's crucial to remember:
+You're setting up only one constraint that must be met simultaneously for all conditions.
+Avoid setting up conflicting constraints (e.g., a value should be less than two and greater than four), as they lead to infeasibility.
+The sign you choose (e.g., plus or minus) must apply consistently across the constraint.
+Testing Constraints with Plus
+Let's say we want to include all the "true" conditions and exclude all the "false" ones using a plus sign.
+For example:
+0 + 0 = 0
+0 + 1 = 1
+1 + 0 = 1
+1 + 1 = 2
+If you can find a sign and number combination that includes all the trues and excludes all the falses, you're on the right track. Otherwise, try a minus sign.
+Example: Setting up and Testing a Constraint
+Let's set up a constraint: 
+Now, test it with different values:
+
+Condition
+True/False
+Should be
+0
+0
+0
+True
+True
+0
+1
+1
+True
+True
+1
+0
+1
+True
+True
+1
+1
+2
+False
+False
+Since all conditions are met (true for trues, false for falses), the constraint works! As they say, "If it works, don't touch it."
+Testing Constraints with Minus
+Now, let's try a minus sign for testing purposes:
+0 - 0 = 0
+0 - 1 = -1
+1 - 0 = 1
+1 - 1 = 0
+If you can't include all trues while excluding the falses, the minus sign might not be suitable.
+When Minus Doesn't Work
+If your false condition results in zero, and you also have a true condition with zero, excluding zero will make that true condition false, which is undesirable. In such cases, consider using a coefficient in front of one of the variables or explore other constraints.
+Exercise: Team Member Selection 🏋️‍♀️
+Consider an exercise where you must select team members based on certain criteria:
+Is the player going to be on my team or not?
+At Least Four Backfield Players
+If you need to ensure that at least four team members can play backfield:
+Identify players who can play backfield (options).
+Include only those players in the constraint.
+Specify that at least four of those players must be chosen.
+For instance, if players 1, 3, 5, and 7 can play backfield, the constraint should include only those players, and you must ensure that at least four are selected. The IP setup is not solvable, but you still need to set it up.
+Average Ball Handling Level 🏀
+If the average ball-handling level of the starting lineup must be at least two, consider each player's ball-handling ability (rated on a scale). Use these ratings to formulate a constraint that ensures the average meets the required level.
+💻 AVD Usage and Support
+It's important to use the AVD (Android Virtual Device) in tests to ensure a smooth experience during exams.
+For AVD-related problems, especially with connecting before tomorrow, contact Chris via Teams or WhatsApp.
+Chris's contact info (likely Teams or WhatsApp) has been shared in an announcement.
+AVD instructions were previously shared in an announcement before the exams.
+Action Items:
+Test the AVD.
+Ensure it works.
+Spread the word about testing the AVD.
+🛠️ Solving IP Problems
+You can use any method to solve IP problems, unless specified otherwise.
+Recap: Branch and Bound and Cutting Plane techniques.
+🧩 Branch and Bound and Cutting Plane Techniques
+If the solver gives fractional values for problems where they don't make sense (like stocks/bonds or players), you need to use branch and bound simplex or cutting plane methods.
+Primal Simplex
+Use primal simplex when there are no negatives on the right-hand side of the constraints.
+Negatives on the right-hand side usually come from adding excesses, which typically happens with "less than or equals to" constraints.
+Dual Simplex
+For the coach problem, there are likely "greater than or equals to" signs, so you need to use dual simplex from the start, even with equality signs.
+If specified, follow up with branch and bound simplex or cutting plane.
+⚙️ Binary Constraints
+When dealing with binary variables, add "less than or equals to 1" constraints for every variable from the beginning.
+This limits the variables to a maximum value of 1, which is necessary for binary constraints.
+Without these constraints, variables can have values like 6.5, which doesn't work for binary variables.
+You can't set them equal to 1 or 0 at the start because you don't know the correct value yet.
+These constraints are needed for both max and min problems with binary variables.
+Example: For variables x1, x2, x3, and x4, add the constraints:
+
+Branch and Bound
+Branch and bound will likely be used on smaller problems in tests.
+Make sure you can build from a scenario with "less than" constraints and apply branch and bound simplex.
+🏀 Calculating Averages
+How to Calculate an Average
+Total (add everything up) divided by the number of entries.
+Example: Ball Handling Scores
+If you want to calculate the average ball handling score, you need the score per player.
+You can't just add the player numbers and divide by the team size.
+Incorrect: (X1 + X2 + X3 + X4 + X5 + X6 + X7) / 5
+Contact Information
+Contact
+Issue
+Platform
+Chris
+AVD Connection Issues
+Teams
+Chris
+AVD Connection Issues
+Whatsapp
+Determining Team Size in Optimization Problems 🧑‍🏫
+When solving optimization problems, especially those involving team selection or investment scenarios, it's crucial to accurately represent the constraints and variables. A common challenge arises when determining the average value of a characteristic across a team or portfolio when the size of the team or the composition of the portfolio is not predetermined.
+Replacing Constants with Variables
+In scenarios where the team size is unknown, you can't simply divide by a fixed number to calculate the average. Instead, you should use decision variables to represent whether each potential member is chosen.
+Each decision variable, denoted as , can take a value of 0 or 1:
+ if the player  is selected.
+ if the player  is not selected.
+To calculate the average when the team size is variable, divide by the sum of these decision variables. For example, if you have seven potential players, the denominator in your average calculation would be:
+This sum represents the number of players chosen, as each selected player contributes a value of 1.
+Example: Ball Handling Average
+Suppose you want the average ball-handling skill of the selected players to be at least 2. The constraint can be expressed as:
+To convert this into a standard form suitable for solvers, multiply both sides by the denominator:
+Then, move all variables to the left side:
+Converting to Standard Form ✍️
+To convert an average constraint into a standard form for linear programming:
+Multiply both sides of the inequality by the denominator (the sum of decision variables or the known team size).
+Rearrange the inequality to bring all variables to one side.
+Simplify the coefficients of the variables.
+Avoiding Fractions 🙅‍♀️
+It's generally advisable to avoid fractions in your linear programming formulations. Multiplying through by the denominator achieves this and simplifies the problem.
+Recap on Team Size Clarification ⚽
+The problem might explicitly state the team size.
+If the team size isn't specified, you can't assume it's equal to the total number of available players.
+Instead, use decision variables to determine the team size, and include them in your average calculations.
+"Either/Or" Constraints 🤔
+When a problem states "either A or B must occur," it implies that one of them must be true, but not both simultaneously. Mathematically, this is represented using an equality constraint:
+,
+where  and  are binary variables representing whether A or B occurs, respectively. This is also known as an XOR constraint. In this case, the use of equals is critical, and you must be wary about using greater than or less than symbols, which would inaccurately represent the situation.
+Constraint Combinations 🧩
+Here's how to handle constraint combinations, particularly when dealing with scenarios involving multiple variables and dependencies.
+Determining True/False Conditions
+When setting up constraints, especially with multiple variables, it's important to determine the conditions under which the constraints should be true or false.
+For example, consider a scenario:
+If X1 starts, then X4 and X5 must both start.
+To analyze this, we can create a table with all the combinations of X1, X4, and X5:
+X1
+X4
+X5
+True/False
+0
+0
+0
+True
+0
+1
+0
+True
+0
+0
+1
+True
+0
+1
+1
+True
+1
+0
+0
+False
+1
+1
+0
+False
+1
+0
+1
+False
+1
+1
+1
+True
+The first four combinations are true because the initial statement only constrains the scenario in which X1 starts, not when it doesn't start. The last row is true because it satisfies the initial statement.
+Setting Up Constraints
+When you've got multiple variables, especially with dependencies, consider multiplying the main variable by the number of variables dependent on it. This doesn't guarantee the only way to set up the constraint, but is a helpful starting point.
+In this case, X4 and X5 depend on X1, so we multiply X1 by 2. The constraints for X4 and X5 should be set up with the same sign because they must both start.
+Let's start with the equation . Evaluating each row in the table, we find that this equation works. However, to write this in standard form, we must have the constants on one side and the variables on the other:
+If you started with the signs, you would have come up with plus, minus, minus and do this to include all the trues and exclude all the falses. Many ways to set this up.
+Additional Tips and Tricks 💡
+Consider Both Possibilities: When evaluating constraints, always ensure that the equation works for both true and false conditions.
+Standard Form: Always convert your constraints to standard form.
+Experiment: There isn't one single correct way to set up the constraints, so don't be afraid to experiment! Playing around with the signs will help you understand the problem better.
+Either/Or Scenarios 🤔
+For "either/or" scenarios, using "equals to one" () is a helpful way to set up the constraint. The "or" in "either or" means one or the other, and NOT both or none.## The Assignment Algorithm 🔄
+Recap on Dummy Variables
+A dummy variable is used when there's no task to fill a matrix.
+For example, task 5 did not exist, so the largest value in the matrix was used as a dummy variable to fill it in.
+Row and Column Reduction 📉
+Row Reduction: In each row, find the smallest value and reduce every element in that row by that value.
+Column Reduction: Check each column, find the smallest value, and reduce every element in that column by that value. Remember that zero is a value.
+Only after completing row and column reduction can you perform your conditional check.
+Covering Zeros with Lines 🥅
+When choosing lines to cover zeros:
+Cover all zeros with the least amount of lines possible.
+Don't just cover zeros without considering the optimal number of lines.
+Start by covering columns or rows with the most zeros at once.
+Consider your options and "play around" to minimize the number of lines.
+Optimality Check and Adjustments ⚖️
+If the number of lines doesn't equal the matrix size, the solution is not optimal.
+If not optimal, adjust the matrix:
+Uncovered values: Subtract the smallest uncovered value.
+Intersections: Add the smallest uncovered value.
+Covered values (once): Leave them the same.
+Continue this process until the number of lines equals the matrix size, indicating an optimal solution.
+Even with different line placements, you should arrive at the same optimal result eventually.
+For example, if the matrix size is 5 and you only need 4 lines, it's not optimal.
+Adjusting Non-Optimal Matrices 📐
+Identify the smallest uncovered value ().
+Adjust the matrix:
+Uncovered values: Subtract .
+Intersections: Add .
+Values covered by only one line remain unchanged.
+Important Considerations for Choosing Lines ⚠️
+If a person cannot do a job (specified by a dash), leave it as a dash. Do not convert it to a zero. This ensures that choice is never considered.
+Additional Optimality Checks ✅
+If you find 5 lines, double-check to ensure you cannot achieve the same coverage with fewer lines.
+Selecting the Optimal Assignment 🎯
+Only choose zeros, as these are your potential assignment choices.
+Consider initial IP setup to determine what is feasible: Can a person do multiple jobs, and is it feasible for the matrix size?
+Assumptions for Route Assignments 🛣️
+If not specified, assume:
+Each company can only take one route, and each route can only be taken by one company.
+Balancing Jobs and People 🧑‍💼
+If there are enough jobs to be completed, each job constraint is equal to one.
+Ensure there are enough people to complete the jobs. If not, one person may do nothing.
+If a job can be done by two people, the right-hand side should allow two people.
+For example, if there aren't enough jobs for each person, you can't assume that each person must do a job.
+Job Assignment Constraints 🧑‍💼
+When assigning jobs, it's crucial to consider the constraints of the problem. Here's a breakdown:
+If a person can do two jobs, it doesn't necessarily mean they have to. The constraint would be "less than or equals to two" for that person. If it's mandatory, then it's "equals to."
+Consider the number of jobs available versus the number of people. If one person does two jobs, see how many people can do nothing.
+Think about the matrix size and the number of jobs available.
+You can't assume the solution. Allow for the possibility that you don't know the solution, especially with larger tables.
+Handling Specific Job Requirements 🛠️
+If a job requires a specific number of people:
+Set the corresponding variable equal to that number. For example, if job four needs two people, set that variable to two.
+Reasoning Through Job Assignments 🤔
+Reason out the assignments properly, especially the signs (equal to, less than or equal to).
+Don't assume the same thing will always happen.
+If there aren't enough people for all jobs, some jobs might not be done, leading to a "less than or equals to" constraint.
+Representing Impossibility 🚫
+Dashes in the matrix mean a person cannot do a job.
+Do not put numbers where there are dashes. Leave them as dashes.
+Example using Excel and Matrix Reduction 💻
+Let's say we have a matrix representing bids from companies for different routes. The matrix has dashes to represent that a company cannot take a particular route.
+Initial Matrix Setup
+4,000  5,000  -      -      -
+4,000  -      4,000  -      4,000
+Remember to multiply the thousands back in at the end if you divide to simplify.
+Step 1: Check for a Square Matrix
+Check if the matrix is square. If not, add a dummy row or column to make it square.
+If there's a dummy, use it for calculations.
+In your final Z value, don't include the dummy unless specifically asked.
+Step 2: Row Reduction
+Row reduction involves finding the smallest value in each row and subtracting it from all elements in that row. Remember, dashes are not zeros.
+Initial Matrix
+Route 1
+Route 2
+Route 3
+Route 4
+Route 5
+
+Row Reduction
+Route 1
+Route 2
+Route 3
+Route 4
+Route 5
+
+Step 3: Column Reduction
+Column reduction involves finding the smallest value in each column and subtracting it from all elements in that column.
+Column Reduction (No Change in this case)
+Since the smallest value in each column is zero, the table remains the same after column reduction.
+Route 1
+Route 2
+Route 3
+Route 4
+Route 5
+
+Step 4: Conditional Check
+The conditional check involves finding the least number of lines to cover all zeros. If the number of lines is not equal to the size of the matrix, the solution is not optimal.
+In this case, three lines are not enough to cover all zeros, so it's not optimal.
+Step 5: Further Calculations
+Choose the smallest uncovered value. Subtract it from all uncovered values and add it to values at line intersections. Dashes stay dashes.
+Route 1
+Route 2
+Route 3
+Route 4
+Route 5
+
+Step 6: Next Conditional Check
+Check again if the number of lines equals the size of the matrix. If optimal, copy the initial table to choose the zeros. Remember the possibilities.
+Choosing Zeros and Optimal Assignments 🎯
+When choosing zeros, consider what was possible and what was not (based on the initial dashes).
+Each bidder can be assigned to one route (if not specified, assume one).
+Each company can only do one bid (if not specified, assume one).
+Remember: For minimization problems, you're trying to get the smallest values.
+When choosing, remember 1 1 1 1 1 1 1.
+🎯 Task Prioritization with Limited Options
+When dealing with tasks, bids, or objects that must be prioritized, focus on routes (or companies, in the context of the lecture) with only one zero to choose from. If a route has only one option, it must be selected.
+Example: Root Selection Process
+Identify roots with only one zero.
+Choose that specific option.
+Consider the implications of that choice on other routes.
+If selecting a zero for a company means that the company's requirement is fulfilled (e.g., it was supposed to do only one bid), then remove that company from other potential routes.
+Note: It's not always about strict equality. You need to think about the conditions (equals, less than equals) and choose accordingly.
+🚫 Eliminating Routes
+After choosing a route, it might eliminate other routes if a company's requirement is met. Continue this process until all necessary assignments are made.
+Dummies
+If a "dummy" (an option you'd typically avoid) is the only choice left due to eliminations, you may be forced to use it.
+🤔 Handling Choices
+If you have multiple options, you'll need to refer back to your initial table values to make the optimal choice. This is particularly relevant when dealing with scenarios where each entity can be assigned multiple routes.
+In a minimization problem, you'll pick the option with the lowest value.
+Alternative Solutions
+Alternative solutions refer to scenarios where the set remains the same, but different choices can be made.
+If you have multiple choices and they result in the same outcome (e.g., same cost), you have alternative solutions.
+🧮 Calculating Z Value
+Once you've made all your choices, sum the values to get your z value. Remember to multiply by any relevant factors to get the final result.
+📝 Assigning Multiple Routes
+The complexity increases when each entity can be assigned two routes. This requires careful consideration of all available options and their implications.
