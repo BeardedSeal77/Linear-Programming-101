@@ -1,0 +1,5 @@
+Practical Elements
+
+Add Excel/Solver implementations for each method
+Include Python code examples using PuLP or OR-Tools
+Create summary comparison tables of when to use each method

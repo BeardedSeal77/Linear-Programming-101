@@ -59,11 +59,10 @@ Subject to:
   x₁, x₂ ≥ 0         (non-negativity)
 ```
 
-**In Matrix Form**:
-- c = [40, 30]
-- A = [[2, 3], [1, 2], [1, 0]]
-- b = [120, 60, 50]
-- All inequalities are ≤
+**Manual Setup for Excel Tables:**
+- Set up decision variables x₁ (chairs) and x₂ (tables) in columns
+- List constraints in rows with coefficients and constraint types
+- All constraints are ≤ inequalities for this canonical form
 
 ### Example 2: Minimization Problem (Transportation Cost)
 
@@ -84,11 +83,10 @@ Subject to:
   x₁, x₂ ≥ 0        (non-negativity)
 ```
 
-**In Matrix Form**:
-- c = [8, 12]
-- A = [[1, 0], [0, 1], [1, 1]]
-- b = [20, 15, 50]
-- All inequalities are ≥
+**Manual Setup for Excel Tables:**
+- Set up decision variables x₁ and x₂ in columns
+- List constraints in rows with coefficients and constraint types
+- All constraints are ≥ inequalities for this canonical form
 
 ---
 
@@ -128,10 +126,12 @@ Subject to:
   x₁, x₂, s₁, s₂, s₃ ≥ 0
 ```
 
-**Matrix Form**:
-- c = [-40, -30, 0, 0, 0]
-- A = [[2, 3, 1, 0, 0], [1, 2, 0, 1, 0], [1, 0, 0, 0, 1]]
-- b = [120, 60, 50]
+**Manual Excel Table Setup**:
+- Create columns for: x₁, x₂, s₁, s₂, s₃, RHS
+- Row 1: Objective coefficients: [-40, -30, 0, 0, 0, 0]
+- Row 2: Constraint 1: [2, 3, 1, 0, 0, 120]
+- Row 3: Constraint 2: [1, 2, 0, 1, 0, 60]
+- Row 4: Constraint 3: [1, 0, 0, 0, 1, 50]
 
 ### Converting Minimization Example to Standard Form
 
@@ -166,10 +166,12 @@ Subject to:
   x₁, x₂, r₁, r₂, r₃ ≥ 0
 ```
 
-**Matrix Form**:
-- c = [8, 12, 0, 0, 0]
-- A = [[1, 0, -1, 0, 0], [0, 1, 0, -1, 0], [1, 1, 0, 0, -1]]
-- b = [20, 15, 50]
+**Manual Excel Table Setup**:
+- Create columns for: x₁, x₂, r₁, r₂, r₃, RHS
+- Row 1: Objective coefficients: [8, 12, 0, 0, 0, 0]
+- Row 2: Constraint 1: [1, 0, -1, 0, 0, 20]
+- Row 3: Constraint 2: [0, 1, 0, -1, 0, 15]
+- Row 4: Constraint 3: [1, 1, 0, 0, -1, 50]
 
 ---
 
@@ -255,6 +257,88 @@ Subject to:
 
 ---
 
+## Manual W-Form Setup in Excel
+
+### What is W-Form?
+W-form (Working form) is the standard tableau format used for manual simplex method calculations. It organizes all problem data into a systematic table structure for step-by-step solution.
+
+### Step-by-Step W-Form Setup Process
+
+#### Step 1: Create the Basic Table Structure
+1. **Set up columns**: Create headers for all variables (decision + slack/surplus) plus RHS
+2. **Set up rows**: Create rows for objective function and each constraint
+3. **Label clearly**: Use consistent variable names throughout
+
+#### Step 2: Enter Objective Function Row
+1. **Place objective coefficients** in first row under variable columns
+2. **For maximization**: Enter coefficients as negative values (-c₁, -c₂, ...)
+3. **For minimization**: Enter coefficients as positive values (c₁, c₂, ...)
+4. **Slack/surplus variables**: Always enter as 0 in objective row
+
+#### Step 3: Enter Constraint Rows  
+1. **Copy constraint coefficients** exactly as they appear in standard form
+2. **Include slack variables**: Enter 1 in appropriate column, 0 elsewhere
+3. **Include surplus variables**: Enter -1 in appropriate column, 0 elsewhere
+4. **Enter RHS values** in the rightmost column
+
+#### Step 4: Manual Calculation Setup
+1. **Create ratio test column** for pivot selection
+2. **Set up separate area** for row operations calculations
+3. **Prepare iteration tracking** to record each tableau step
+
+### Example W-Form Setup
+
+**Problem**: 
+```
+Maximize z = 40x₁ + 30x₂
+Subject to:
+  2x₁ + 3x₂ ≤ 120
+  x₁ + 2x₂ ≤ 60  
+  x₁ ≤ 50
+  x₁, x₂ ≥ 0
+```
+
+**Manual W-Form Table in Excel**:
+
+| Iteration | Basis | x₁  | x₂  | s₁ | s₂ | s₃ | RHS | Ratio |
+|-----------|-------|-----|-----|----|----|----|----|-------|
+| T-0       | z     | -40 | -30 | 0  | 0  | 0  | 0   | -     |
+|           | s₁    | 2   | 3   | 1  | 0  | 0  | 120 | 60    |
+|           | s₂    | 1   | 2   | 0  | 1  | 0  | 60  | 60    |
+|           | s₃    | 1   | 0   | 0  | 0  | 1  | 50  | 50    |
+
+### Manual Pivot Selection Rules
+
+#### Entering Variable (Column Selection)
+1. **For maximization**: Choose column with most negative coefficient in z-row
+2. **For minimization**: Choose column with most positive coefficient in z-row
+3. **Tie-breaking**: Choose leftmost column if coefficients are equal
+
+#### Leaving Variable (Row Selection) 
+1. **Calculate ratios**: RHS value ÷ pivot column value (only for positive pivot values)
+2. **Choose smallest ratio**: This determines the leaving variable
+3. **Tie-breaking**: Choose topmost row if ratios are equal
+4. **Ignore negative ratios**: These don't impose constraints
+
+### Manual Row Operations Process
+
+#### Step 1: New Pivot Row Calculation
+```
+New pivot row = Old pivot row ÷ pivot element
+```
+
+#### Step 2: All Other Rows Calculation
+```
+New row = Old row - (pivot column coefficient × new pivot row)
+```
+
+#### Step 3: Manual Calculation Example
+If pivot element is 3 in position (2,2):
+1. **New row 2**: Divide entire row 2 by 3
+2. **Row 1 update**: Row 1 - (-30 × new row 2)
+3. **Row 3 update**: Row 3 - (0 × new row 2) = no change
+4. **Row 4 update**: Row 4 - (0 × new row 2) = no change
+
 ## Excel Verification Guide
 
 ### Setting Up Your Excel Worksheet
@@ -304,46 +388,38 @@ Subject to:
 4. **Verify all constraints** have correct inequality direction
 5. **Confirm objective direction** matches canonical form
 
-### Common Excel Formulas
+### Manual Calculation Guidelines
 
 #### Negating Objective Function:
-```excel
-=-C3  (where C3 contains original coefficient)
-```
+- **By hand**: Change the sign of each coefficient
+- **Example**: 40x₁ + 30x₂ becomes -40x₁ - 30x₂
 
 #### Adding Slack Variables:
-```excel
-=IF(constraint_type="<=", 1, 0)
-```
+- **For ≤ constraints**: Add +1 in the slack column for that constraint
+- **Example**: x₁ + x₂ ≤ 10 becomes x₁ + x₂ + s₁ = 10
 
 #### Adding Surplus Variables:
-```excel
-=IF(constraint_type=">=", -1, 0)
-```
+- **For ≥ constraints**: Add -1 in the surplus column for that constraint  
+- **Example**: x₁ + x₂ ≥ 8 becomes x₁ + x₂ - r₁ = 8
 
 #### Flipping Inequality:
-```excel
-=-A3  (multiply entire constraint by -1)
-```
+- **Rule**: Multiply entire constraint by -1 when converting ≥ to ≤
+- **Example**: x₁ + x₂ ≥ 8 becomes -x₁ - x₂ ≤ -8
 
-### Verification Formulas
+### Manual Verification Checklist
 
 #### Check Standard Form:
-```excel
-=AND(
-  objective_direction="Min",
-  COUNTIF(constraint_types,"=")=total_constraints,
-  COUNTIF(variable_bounds,">=0")=total_variables
-)
-```
+- [ ] **Objective is minimization**
+- [ ] **All constraints are equalities (=)**  
+- [ ] **All variables ≥ 0**
+- [ ] **Count slack variables**: Should equal number of ≤ constraints in original
+- [ ] **Count surplus variables**: Should equal number of ≥ constraints in original
 
 #### Check Canonical Form:
-```excel
-=IF(objective_direction="Max",
-  COUNTIF(constraint_types,"<=")=total_constraints,
-  COUNTIF(constraint_types,">=")=total_constraints
-)
-```
+- [ ] **Maximization problems**: All constraints should be ≤
+- [ ] **Minimization problems**: All constraints should be ≥
+- [ ] **All variables ≥ 0**
+- [ ] **No slack/surplus variables added yet**
 
 ### Common Mistakes to Avoid:
 

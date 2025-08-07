@@ -657,12 +657,27 @@ Subject to:
 - **Memory requirements** for active node storage
 - **Choosing effective branching strategies**
 
-### Excel Implementation Tips
-- **Use separate worksheets** for each sub-problem
-- **Track incumbent solution** across all nodes
-- **Document branching decisions** clearly
-- **Verify integer constraints** in final solutions
-- **Calculate bounds accurately** at each node
+### Manual Excel Implementation Tips
+
+#### Setting Up Branch & Bound in Excel
+- **Create master worksheet** for tracking all nodes and incumbents
+- **Use separate worksheets** for each sub-problem's simplex tableau  
+- **Label worksheets clearly**: "Root", "Node_x1≤3", "Node_x1≥4", etc.
+- **Create branching tree diagram** on separate sheet for visualization
+
+#### Manual Calculation Process
+- **Copy parent tableau** exactly to new worksheet for each sub-problem
+- **Add new constraint row** by hand at bottom of tableau
+- **Resolve conflicts manually** using row operations (see sensitivity analysis guide)
+- **Apply dual simplex by hand** if RHS becomes negative
+- **Document each step** with clear annotations
+
+#### Tracking Progress Manually
+- **Maintain incumbent table**: Current best integer solution and objective value
+- **Track node status**: Active, Fathomed (reason), Integer solution found
+- **Calculate bounds accurately** at each node by reading z-row RHS
+- **Verify integer constraints** by checking solution values manually
+- **Update branching tree** after solving each sub-problem
 
 ### Business Applications
 - **Production planning**: Integer units of products

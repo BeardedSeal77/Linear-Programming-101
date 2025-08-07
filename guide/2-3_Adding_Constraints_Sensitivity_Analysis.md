@@ -130,18 +130,26 @@ Subject to:
 **New constraint involves**: x₃ (basic variable in row 2)
 **Result**: **Conflict detected** - x₃ appears in both row 2 and new row 4
 
-#### Step 3: Resolve Conflict Using Row Operations
+#### Step 3: Manual Conflict Resolution Process
 
-**Initial setup**:
-| Row | x₁ | x₂  | x₃ | s₁ | s₂ | s₃  | s₄ | RHS |
-|-----|----|----|----|----|----|----- |----|-----|
-| 2   | 0  | -2 | 1  | 0  | 2  | -4  | 0  | 8   |
-| 4   | 0  | 0  | 1  | 0  | 0  | 0   | 1  | 5   |
+**Manual Row Operations Setup:**
+- **Row 2 (x₃ basic)**: [0, -2, 1, 0, 2, -4, 0, 8]
+- **Row 4 (new constraint)**: [0, 0, 1, 0, 0, 0, 1, 5]
 
-**Row operation**: Row 2 - Row 4
-| New Row 2 | x₁ | x₂  | x₃ | s₁ | s₂ | s₃  | s₄ | RHS |
-|-----------|----|----|----|----|----|----- |----|-----|
-| 2         | 0  | -2 | 0  | 0  | 2  | -4  | -1 | 3   |
+**Conflict**: x₃ appears in both rows with coefficient 1
+
+**Manual Row Operation**: Row 2 - Row 4
+1. **Element by element subtraction**:
+   - x₁: 0 - 0 = 0
+   - x₂: -2 - 0 = -2  
+   - x₃: 1 - 1 = 0 ✓ (conflict resolved)
+   - s₁: 0 - 0 = 0
+   - s₂: 2 - 0 = 2
+   - s₃: -4 - 0 = -4
+   - s₄: 0 - 1 = -1
+   - RHS: 8 - 5 = 3
+
+**New Row 2**: [0, -2, 0, 0, 2, -4, -1, 3]
 
 #### Final Updated Tableau:
 | T* | x₁ | x₂  | x₃ | s₁ | s₂ | s₃  | s₄ | RHS |
@@ -152,10 +160,12 @@ Subject to:
 | 3  | 1  | 1¼ | 0  | 0  | -½ | 1½  | 0  | 2   |
 | 4  | 0  | 0  | 1  | 0  | 0  | 0   | 1  | 5   |
 
-**Analysis**:
-- **Negative RHS** in row 4: -3 (infeasible)
-- **Apply Dual Simplex**: Use dual simplex to restore feasibility
-- **Final result**: New optimal solution with x₃ = 5 (constraint is binding)
+**Manual Analysis Process**:
+1. **Check RHS values**: Row 2 now has RHS = 3, but this represents s₁ not x₃
+2. **Current solution reading**: From updated tableau, x₃ = 5 (basic in row 4)
+3. **Constraint violation check**: Original solution had x₃ = 8, new constraint x₃ ≤ 5
+4. **8 > 5**: Constraint is violated, need to apply dual simplex
+5. **Apply dual simplex method** to find new feasible optimal solution
 
 #### After Dual Simplex Resolution:
 | t-* | x₁ | x₂  | x₃ | s₁ | s₂ | s₃  | s₄ | RHS |
@@ -210,29 +220,48 @@ Subject to:
 
 ---
 
-## Conflict Resolution Strategies
+## Manual Conflict Resolution Strategies
 
-### Identifying Conflicts
-1. **Scan new constraint row** for non-zero coefficients
-2. **Check if variables are basic** in optimal tableau
-3. **Mark conflicting variables** for resolution
+### Manual Process for Identifying Conflicts
+1. **Write down new constraint** in standard form
+2. **List all variables** with non-zero coefficients in new constraint
+3. **Check current tableau** to identify which variables are basic
+4. **Mark conflicts**: Any basic variable appearing in new constraint
 
-### Resolution Methods
+### Manual Resolution Methods
 
-#### Method 1: Row Subtraction (Most Common)
-- **Identify rows**: Original basic variable row and new constraint row
-- **Subtract appropriately**: Eliminate conflict coefficient
-- **Update tableau**: Replace conflicting row with result
+#### Method 1: Manual Row Subtraction (Most Common)
+**Step-by-step process:**
+1. **Identify conflicting variable** (basic variable in new constraint)
+2. **Find the row** where this variable is basic (coefficient = 1)
+3. **Perform row operation** by hand:
+   - New constraint row - (coefficient × basic variable row)
+   - Calculate each element: new_element = old_element - (coeff × corresponding_element)
 
-#### Method 2: Variable Substitution
-- **Express basic variable** in terms of non-basic variables
-- **Substitute into new constraint**
-- **Create conflict-free constraint**
+**Example calculation:**
+- Conflicting variable: x₃ with coefficient 1 in new constraint
+- Basic row for x₃: [0, -2, 1, 0, 2, -4, 8]  
+- New constraint: [0, 0, 1, 0, 0, 0, 5]
+- **Manual subtraction**: [0, 0, 1, 0, 0, 0, 5] - 1×[0, -2, 1, 0, 2, -4, 8]
+- **Result**: [0, 2, 0, 0, -2, 4, -3]
 
-#### Method 3: Pivot Operations
-- **Use standard simplex pivoting**
-- **Eliminate conflicts systematically**
-- **Maintain tableau structure**
+#### Method 2: Manual Variable Substitution
+**Step-by-step process:**
+1. **Express basic variable** from its tableau row
+2. **Substitute expression** into new constraint manually  
+3. **Simplify by hand** to get conflict-free constraint
+
+**Example:**
+- From tableau: x₃ = 8 + 2x₂ - 2s₂ + 4s₃
+- New constraint: x₃ ≤ 5
+- **Substitution**: (8 + 2x₂ - 2s₂ + 4s₃) ≤ 5
+- **Simplify**: 2x₂ - 2s₂ + 4s₃ ≤ -3
+
+#### Method 3: Manual Pivot-Style Operations
+**When to use:** Complex conflicts involving multiple variables
+1. **Set up elimination sequence** for each conflicting variable
+2. **Apply row operations** one by one manually
+3. **Verify conflict resolution** after each step
 
 ### Post-Resolution Actions
 1. **Check feasibility**: Look for negative RHS values
@@ -343,11 +372,33 @@ After completing these exercises, students should be able to:
 - **Resource planning**: Adding newly discovered limitations
 - **Regulatory compliance**: Incorporating new requirements
 
-### Excel Implementation Tips:
-- **Use absolute cell references** when copying constraint rows
-- **Check tableau consistency** after row operations
-- **Verify basic variable identification** in each iteration
-- **Document constraint reasoning** for business interpretation
+### Manual Excel Implementation Tips:
+
+#### Setting Up Constraint Addition
+1. **Create new column** for additional slack/surplus variable
+2. **Add new row** for the new constraint at bottom of tableau
+3. **Copy existing tableau structure** to maintain format
+4. **Label new variable clearly** (s₄, e₄, etc.)
+
+#### Manual Calculation Process
+1. **Use separate worksheet** for row operation calculations
+2. **Document each step** with clear labels
+3. **Verify calculations** by checking elimination worked
+4. **Cross-reference** original and new constraint coefficients
+
+#### Conflict Resolution Checklist
+- [ ] **Identify all basic variables** in current tableau
+- [ ] **Check each variable** in new constraint for conflicts  
+- [ ] **Perform row operations** step by step manually
+- [ ] **Verify conflict elimination**: Coefficient should become 0
+- [ ] **Check feasibility** of resulting RHS values
+- [ ] **Apply dual simplex** if any RHS < 0
+
+#### Manual Dual Simplex Application
+- **When needed**: RHS values become negative after adding constraint
+- **Pivot row selection**: Most negative RHS (same as regular dual simplex)
+- **Pivot column selection**: Manual ratio test on negative coefficients
+- **Continue until**: All RHS ≥ 0 (feasible solution restored)
 
 ---
 

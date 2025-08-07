@@ -102,16 +102,43 @@ x₁ + x₂ + s₂ = 7       (from x₁ + x₂ ≤ 7)
 - **Reason**: This gives the biggest improvement toward feasibility
 - **Tie-breaking**: Choose arbitrarily or use smallest subscript
 
-### Step 3: Select Pivot Column (Entering Variable) - Ratio Test
-- **Only consider negative coefficients** in the pivot row
-- **Ratio test formula**: θ = |z-coefficient| / |pivot row coefficient|
-- **Rule**: Choose column with **smallest ratio**
-- **If no negative coefficients**: Problem is infeasible
+### Step 3: Select Pivot Column (Entering Variable) - Manual Dual Ratio Test
 
-### Step 4: Pivot Operations
-- Same as Primal Simplex:
-  1. **New pivot row** = Old pivot row ÷ pivot element
-  2. **All other rows** = Old row - (pivot column coefficient × new pivot row)
+#### Manual Process for Pivot Column Selection:
+1. **Identify pivot row** (row with most negative RHS)
+2. **Examine all coefficients** in the pivot row  
+3. **Only consider negative coefficients** - positive coefficients are ignored
+4. **Calculate ratios manually**:
+   - For each negative coefficient aᵢⱼ in pivot row
+   - Calculate: |z-row coefficient| ÷ |pivot row coefficient|
+   - Example: If z-row has -30 and pivot row has -2, ratio = 30 ÷ 2 = 15
+
+#### Step-by-Step Manual Calculation:
+1. **List all variables** with negative coefficients in pivot row
+2. **Write down each ratio**: |cⱼ| / |aᵢⱼ| where aᵢⱼ < 0
+3. **Choose smallest ratio** - this determines entering variable
+4. **Tie-breaking**: If ratios are equal, choose leftmost variable
+5. **No negative coefficients**: Problem is infeasible - STOP
+
+### Step 4: Manual Pivot Operations
+
+#### Manual Row Operations Process:
+1. **Identify pivot element** (intersection of pivot row and pivot column)
+2. **Calculate new pivot row** by hand:
+   - Divide each element in pivot row by pivot element
+   - New pivot row = [old element₁ ÷ pivot, old element₂ ÷ pivot, ...]
+
+3. **Update all other rows manually**:
+   - For each other row: New row = Old row - (multiplier × new pivot row)  
+   - Multiplier = pivot column coefficient in that row
+
+#### Example Manual Calculation:
+If pivot element is -2 and pivot row is [0, -2, 1, 0, -3]:
+- **New pivot row**: [0÷(-2), (-2)÷(-2), 1÷(-2), 0÷(-2), (-3)÷(-2)] = [0, 1, -0.5, 0, 1.5]
+
+For updating z-row with coefficient -30 in pivot column:
+- **New z-row** = Old z-row - (-30 × new pivot row)
+- **New z-row** = Old z-row + 30 × [0, 1, -0.5, 0, 1.5]
 
 ### Step 5: Update Tableau and Repeat
 - Return to Step 1 with new tableau
@@ -153,10 +180,16 @@ Subject to:
 | 2   | 1   | 1   | 0  | 1  | 0  | 7   |          |
 | 3   | 10  | 4   | 0  | 0  | 1  | 40  |          |
 
-**Analysis**:
-- **Pivot row**: Row 1 (only negative RHS: -3)
-- **Pivot column**: x₂ (ratio test: |(-30)/(-1)| = 30, no other negative coefficients)
-- **Pivot element**: -1
+**Manual Analysis Process**:
+1. **Step 1**: Check feasibility - Row 1 has RHS = -3 < 0, continue
+2. **Step 2**: Select pivot row - Row 1 has only negative RHS (-3), select Row 1
+3. **Step 3**: Manual dual ratio test for pivot column:
+   - Row 1 coefficients: [0, -1, 1, 0, 0] 
+   - Only x₂ has negative coefficient (-1)
+   - Z-row coefficient for x₂: -30
+   - Ratio calculation: |(-30)| ÷ |(-1)| = 30 ÷ 1 = 30
+   - **Pivot column**: x₂ (only option)
+4. **Step 4**: **Pivot element**: -1 (intersection of Row 1 and x₂ column)
 
 ### Iteration 2: After First Pivot
 
@@ -167,12 +200,17 @@ Subject to:
 | 2   | 1   | 0  | 1  | 1  | 0  | 4   | 4/1 = 4    |
 | 3   | 10  | 0  | 4  | 0  | 1  | 28  | 28/10 = 2.8|
 
-**Analysis**:
-- **All RHS values ≥ 0**: Feasible solution achieved!
-- **Negative z-coefficient**: -100 (not optimal yet)
-- **Switch to Primal Simplex**: Continue with regular ratio test
-- **Pivot column**: x₁ (most negative z-coefficient)
-- **Pivot row**: Row 3 (smallest ratio: 2.8)
+**Manual Analysis Process**:
+1. **Step 1**: Check feasibility - All RHS ≥ 0: [90, 3, 4, 28] ✓ Feasible!
+2. **Dual phase complete** - Switch to Primal Simplex Method
+3. **Check optimality**: Z-row has -100 coefficient (still not optimal)
+4. **Manual Primal Simplex**:
+   - **Pivot column**: x₁ (most negative z-coefficient: -100)
+   - **Manual ratio test**: 
+     * Row 2: 4 ÷ 1 = 4
+     * Row 3: 28 ÷ 10 = 2.8 (smallest)
+   - **Pivot row**: Row 3 (smallest ratio)
+   - **Pivot element**: 10
 
 ### Iteration 3: Final Optimal Tableau
 
@@ -301,11 +339,26 @@ Subject to:
 3. **Missing the transition** from Dual to Primal phase
 4. **Forgetting excess variable rules** when converting ≥ constraints
 
-### Excel Implementation Tips
-- **Ratio test formula**: `=ABS(z-value/pivot-row-value)`
-- **Pivot row**: `MIN(RHS)` among negative values
-- **Phase transition**: Monitor when all RHS ≥ 0
-- **Final check**: All z-coefficients ≥ 0 for optimality
+### Manual Excel Implementation Tips
+
+#### Setting Up Manual Calculations
+1. **Create separate calculation area** for ratio tests
+2. **Use manual formulas** like `=D2/E2` for individual ratios
+3. **Track pivot elements** in a separate column
+4. **Document each step** for verification
+
+#### Manual Dual Simplex Checklist
+- [ ] **Identify most negative RHS** - mark as pivot row
+- [ ] **List negative coefficients** in pivot row only
+- [ ] **Calculate each ratio** by hand: |z-coeff| ÷ |pivot-coeff|  
+- [ ] **Choose smallest ratio** - mark as pivot column
+- [ ] **Perform row operations** step by step
+- [ ] **Verify feasibility** after each iteration
+
+#### Phase Transition Recognition
+- **Dual phase**: Any RHS < 0, use dual ratio test
+- **Primal phase**: All RHS ≥ 0, use regular ratio test  
+- **Optimal**: All RHS ≥ 0 AND all z-coefficients ≥ 0 (for maximization)
 
 ---
 
