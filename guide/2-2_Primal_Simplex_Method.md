@@ -115,38 +115,128 @@ Subject to:
 
 ---
 
-## Converting to Canonical Form
+## Converting to Canonical Form - Step by Step
 
 ### Canonical Form Requirements
 For the Primal Simplex Algorithm, we need:
-- **Objective function** in the form: (z) - c₁x₁ - c₂x₂ - ... = 0
-- **All constraints** as equalities using slack variables
+- **Objective function** in W-equation form: (W) - c₁x₁ - c₂x₂ - ... = 0
+- **All constraints** as equalities using slack/excess variables
 - **All variables** ≥ 0
 
-### Adding Slack Variables
-Convert inequalities (≤) to equalities by adding slack variables:
+### Step-by-Step Canonical Conversion Process
 
-**Original constraints:**
+#### Step 1: Handle the Objective Function
+**For Maximization**: Convert to W-equation form
+- Original: Maximize z = 60x₁ + 30x₂ + 20x₃
+- **W-equation**: W - 60x₁ - 30x₂ - 20x₃ = 0
+- **In tableau**: Coefficients become [-60, -30, -20] in z-row
+
+**For Minimization**: Two options
+- Option 1: Keep as minimize, coefficients stay positive [60, 30, 20]
+- Option 2: Convert to maximize by negating: W + 60x₁ + 30x₂ + 20x₃ = 0
+
+#### Step 2: Handle Constraints - When to Add Slack vs Excess
+
+**Rule for ≤ Constraints**: Add SLACK variables (s)
+- **Original**: 8x₁ + 6x₂ + 1x₃ ≤ 48
+- **Add slack**: 8x₁ + 6x₂ + 1x₃ + s₁ = 48
+- **Meaning**: s₁ represents unused capacity
+- **Slack coefficient**: +1 (always positive)
+
+**Rule for ≥ Constraints**: Add EXCESS variables (e) 
+- **Original**: x₁ + x₂ ≥ 10  
+- **Add excess**: x₁ + x₂ - e₁ = 10
+- **Meaning**: e₁ represents amount above minimum requirement
+- **Excess coefficient**: -1 (always negative)
+
+**Rule for = Constraints**: No additional variables needed
+- **Original**: 2x₁ + 3x₂ = 15
+- **Keep as is**: 2x₁ + 3x₂ = 15
+
+#### Step 3: Manual Process for Adding Variables
+
+**For each ≤ constraint:**
+1. **Identify the constraint**: Find all ≤ inequalities
+2. **Create slack variable**: s₁, s₂, s₃, etc. (unique for each)
+3. **Add to constraint**: Original constraint + sᵢ = RHS
+4. **Set up tableau column**: 1 in corresponding row, 0 elsewhere
+5. **Objective coefficient**: 0 (slack doesn't affect objective)
+
+**For each ≥ constraint:**
+1. **Identify the constraint**: Find all ≥ inequalities  
+2. **Create excess variable**: e₁, e₂, e₃, etc. (unique for each)
+3. **Subtract from constraint**: Original constraint - eᵢ = RHS
+4. **Set up tableau column**: -1 in corresponding row, 0 elsewhere
+5. **Objective coefficient**: 0 (excess doesn't affect objective)
+
+### Step 4: Creating the W-Equation (Working Equation)
+
+**What is the W-Equation?**
+The W-equation is the objective function rearranged to equal zero, making it suitable for tableau format.
+
+#### Manual W-Equation Process:
+
+**Step 4a: Start with Original Objective**
+- Original: Maximize z = 60x₁ + 30x₂ + 20x₃
+
+**Step 4b: Move All Terms to Left Side**  
+- Rearrange: z - 60x₁ - 30x₂ - 20x₃ = 0
+- Or use W: W - 60x₁ - 30x₂ - 20x₃ = 0
+
+**Step 4c: Include All Variables (including slack/excess)**
+- Complete W-equation: W - 60x₁ - 30x₂ - 20x₃ + 0s₁ + 0s₂ + 0s₃ = 0
+- **Key**: Slack and excess variables get coefficient 0 in objective
+
+**Step 4d: Set Up Tableau Row**
+- **W-row coefficients**: [-60, -30, -20, 0, 0, 0, 0]
+- **Order**: [W, x₁, x₂, x₃, s₁, s₂, s₃, RHS]
+
+### Step 5: Complete Example Transformation
+
+**Original Problem:**
 ```
-8x₁ + 6x₂ + 1x₃ ≤ 48
-4x₁ + 2x₂ + 1.5x₃ ≤ 20
-2x₁ + 1.5x₂ + 0.5x₃ ≤ 8
+Maximize z = 60x₁ + 30x₂ + 20x₃
+Subject to:
+  8x₁ + 6x₂ + 1x₃ ≤ 48    (Add s₁)
+  4x₁ + 2x₂ + 1.5x₃ ≤ 20  (Add s₂)  
+  2x₁ + 1.5x₂ + 0.5x₃ ≤ 8 (Add s₃)
+  x₁, x₂, x₃ ≥ 0
 ```
 
-**With slack variables:**
+**Complete Canonical Form with W-Equation:**
 ```
-8x₁ + 6x₂ + 1x₃ + s₁ = 48
-4x₁ + 2x₂ + 1.5x₃ + s₂ = 20
-2x₁ + 1.5x₂ + 0.5x₃ + s₃ = 8
-```
-
-### Complete Canonical Form
-```
-(z) - 60x₁ - 30x₂ - 20x₃ = 0
-8x₁ + 6x₂ + 1x₃ + s₁ = 48
-4x₁ + 2x₂ + 1.5x₃ + s₂ = 20
-2x₁ + 1.5x₂ + 0.5x₃ + s₃ = 8
+W - 60x₁ - 30x₂ - 20x₃ + 0s₁ + 0s₂ + 0s₃ = 0
+8x₁ + 6x₂ + 1x₃ + s₁ + 0s₂ + 0s₃ = 48
+4x₁ + 2x₂ + 1.5x₃ + 0s₁ + s₂ + 0s₃ = 20
+2x₁ + 1.5x₂ + 0.5x₃ + 0s₁ + 0s₂ + s₃ = 8
 x₁, x₂, x₃, s₁, s₂, s₃ ≥ 0
+```
+
+### Step 6: Mixed Constraint Example
+
+**Problem with Mixed Constraints:**
+```
+Maximize z = 3x₁ + 2x₂
+Subject to:
+  x₁ + x₂ ≤ 10     (≤: Add slack s₁)
+  2x₁ - x₂ ≥ 4     (≥: Add excess e₁)  
+  x₁ + 2x₂ = 8     (=: No additional variable)
+  x₁, x₂ ≥ 0
+```
+
+**Step-by-Step Conversion:**
+1. **W-equation**: W - 3x₁ - 2x₂ + 0s₁ + 0e₁ = 0
+2. **Constraint 1**: x₁ + x₂ + s₁ = 10 (add slack)
+3. **Constraint 2**: 2x₁ - x₂ - e₁ = 4 (subtract excess)
+4. **Constraint 3**: x₁ + 2x₂ = 8 (equality, unchanged)
+
+**Final Canonical Form:**
+```
+W - 3x₁ - 2x₂ + 0s₁ + 0e₁ = 0
+x₁ + x₂ + s₁ + 0e₁ = 10
+2x₁ - x₂ + 0s₁ - e₁ = 4  
+x₁ + 2x₂ + 0s₁ + 0e₁ = 8
+x₁, x₂, s₁, e₁ ≥ 0
 ```
 
 ---

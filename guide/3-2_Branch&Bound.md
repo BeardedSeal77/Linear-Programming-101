@@ -103,27 +103,134 @@ For fractional variable **xⱼ = k.f** (where k = integer part, f = fractional p
 **Sub-problem 1 (Left branch)**: Add constraint **xⱼ ≤ k**
 **Sub-problem 2 (Right branch)**: Add constraint **xⱼ ≥ k+1**
 
-**STEP 4: Convert to Standard Form**
-- **Left branch**: xⱼ ≤ k → xⱼ + sₙ = k (add slack variable sₙ)
-- **Right branch**: xⱼ ≥ k+1 → xⱼ - eₙ = k+1 (subtract excess variable eₙ)
+**STEP 4: Convert to Standard Form - CORRECT PROCESS**
+
+**For Left Branch (xⱼ ≤ k):**
+- **Original**: xⱼ ≤ k
+- **Add slack**: xⱼ + sₙ = k
+- **Tableau form**: [0, 0, ..., 1, ..., 1] = k (sₙ coefficient = +1)
+- **Result**: Ready for tableau, usually feasible
+
+**For Right Branch (xⱼ ≥ k+1) - CRITICAL CORRECTION:**
+The user's question about "k+1 >= 3, k+1-e1 = 3, -k-1+e1=-3" is INCORRECT.
+
+**Correct Process:**
+- **Original**: xⱼ ≥ k+1
+- **Step 1**: Add excess: xⱼ - eₙ = k+1
+- **Step 2**: For dual simplex readiness: -xⱼ + eₙ = -(k+1)
+- **Tableau form**: [0, 0, ..., -1, ..., 1] = -(k+1) (eₙ coefficient = +1, xⱼ coefficient = -1)
+
+**Example Correction:**
+If x₁ ≥ 4:
+- **Wrong**: k+1-e₁=3, -k-1+e₁=-3
+- **Correct**: x₁ ≥ 4 → x₁ - e₁ = 4 → -x₁ + e₁ = -4
+
+**Why the negative RHS?**
+- **Negative RHS = -4** indicates current solution violates constraint by 4 units
+- **Dual simplex** will work to eliminate this violation
 
 **STEP 5: Inherit Parent Tableau**
 - **Each sub-problem starts with the current optimal tableau**
 - **Add one new constraint row for the branching constraint**
 - **All original constraints remain unchanged**
 
-**STEP 6: Handle Variable Status**
-**Case A: Variable is Non-Basic**
-- Add new constraint row directly to tableau
-- No conflicts occur
-- Proceed with simplex/dual simplex
+**STEP 6: Handle Variable Status - CONFLICT RESOLUTION**
 
-**Case B: Variable is Basic (CONFLICT SITUATION)**
-**Conflict Resolution Procedure:**
-1. **Identify conflict**: New constraint involves basic variable
-2. **Calculate violation**: Current value vs. constraint bound
-3. **Create new constraint row**: Substitute basic variable expression
-4. **Apply dual simplex method**: Resolve infeasibility
+### Case A: Variable is Non-Basic (No Conflict)
+- **Situation**: Branching variable has coefficient 0 in all constraint rows
+- **Action**: Add new constraint row directly to tableau
+- **Example**: If x₂ is non-basic and we add x₂ ≤ 5, simply add row [0, 1, 0, 0, 1, 5]
+- **Result**: No conflicts, proceed with simplex/dual simplex
+
+### Case B: Variable is Basic (CONFLICT SITUATION)
+
+#### The "Two 1's" Problem Explained
+
+**What is the conflict?**
+When a basic variable appears in a new branching constraint, we get **two rows with coefficient 1** for the same variable, violating tableau structure.
+
+**Example Conflict:**
+- **Current tableau**: x₁ is basic in row 2 with coefficient 1
+- **New constraint**: x₁ ≤ 3, which becomes x₁ + s₄ = 3
+- **Problem**: x₁ now has coefficient 1 in **both** row 2 and row 4
+- **Result**: Tableau is no longer in proper form
+
+#### Step-by-Step Conflict Resolution Process
+
+**STEP 1: Identify the Conflict**
+- **Check each basic variable** in the current optimal tableau
+- **If branching variable is basic**: Conflict exists
+- **Note the row number** where the variable is basic (coefficient = 1)
+
+**STEP 2: Extract the Basic Variable Expression**
+From the tableau row where the variable is basic, express the variable in terms of non-basic variables.
+
+**Example**: If row 2 is [1, 0, -1¼, ¼, 0, 3¾], then:
+x₁ = 3¾ + 1¼s₁ - ¼s₂
+
+**STEP 3: Substitute into New Constraint**
+Replace the basic variable in the new constraint with its expression.
+
+**Detailed Example:**
+- **New constraint**: x₁ ≤ 3 → x₁ + s₄ = 3
+- **Substitute**: (3¾ + 1¼s₁ - ¼s₂) + s₄ = 3
+- **Rearrange**: 1¼s₁ - ¼s₂ + s₄ = 3 - 3¾ = -¾
+- **Final form**: 1¼s₁ - ¼s₂ + s₄ = -¾
+
+**STEP 4: Create New Tableau Row**
+- **New row coefficients**: [0, 0, 1¼, -¼, 1, -¾]
+- **Variable order**: [x₁, x₂, s₁, s₂, s₄, RHS]
+- **Key**: x₁ coefficient is now 0 (conflict resolved!)
+
+#### Complete Manual Example - Oakfield Corporation
+
+**Starting Point**: Optimal tableau with x₁ = 3¾ basic in row 2
+**New Constraint**: x₁ ≤ 3
+
+**Step 1 - Identify Conflict:**
+- x₁ is basic in row 2 of current tableau
+- New constraint x₁ + s₄ = 3 would create "two 1's" for x₁
+
+**Step 2 - Extract Expression:**
+From current tableau row 2: [1, 0, -1¼, ¼, 0] = 3¾
+Therefore: x₁ = 3¾ + 1¼s₁ - ¼s₂
+
+**Step 3 - Substitute:**
+New constraint: x₁ + s₄ = 3
+Substitute: (3¾ + 1¼s₁ - ¼s₂) + s₄ = 3
+Simplify: 1¼s₁ - ¼s₂ + s₄ = -¾
+
+**Step 4 - Add to Tableau:**
+New row: [0, 0, 1¼, -¼, 1] = -¾
+
+**Step 5 - Apply Dual Simplex:**
+Since RHS = -¾ < 0, use dual simplex to restore feasibility
+
+#### Alternative Method: Row Operations
+
+**Instead of substitution, use direct row operations:**
+
+**Given:**
+- **Original basic row**: [1, 0, -1¼, ¼, 0, 3¾]
+- **New constraint**: [1, 0, 0, 0, 1, 3]
+
+**Row Operation:**
+New constraint - Original basic row = Conflict-free row
+[1, 0, 0, 0, 1, 3] - [1, 0, -1¼, ¼, 0, 3¾]
+= [0, 0, 1¼, -¼, 1, -¾]
+
+#### Why This Works
+
+**Before conflict resolution:**
+- Two rows have x₁ coefficient = 1
+- Tableau structure violated
+- Cannot proceed with simplex
+
+**After conflict resolution:**
+- Only one row has x₁ coefficient = 1 (original basic row)
+- New row has x₁ coefficient = 0
+- Proper tableau structure restored
+- Can now apply dual simplex to negative RHS
 
 **Detailed steps for basic variable xⱼ in row i:**
 1. **Original row i**: [aᵢ₁, aᵢ₂, ..., aᵢₙ] = bᵢ
@@ -376,13 +483,72 @@ CONTINUE BRANCHING
 2. **Update incumbent** if better integer solution found
 3. **Continue branching** on active nodes
 
-### Phase 3: Fathoming and Tracking
-1. **Evaluate each sub-problem solution**
+### Phase 3: Understanding Dual vs Primal Transitions in Branch & Bound
+
+#### When Does Each Method Apply?
+
+**Primal Simplex in Branch & Bound:**
+- **Use when**: All RHS ≥ 0 (feasible) but z-row has negative coefficients (not optimal)
+- **Common scenario**: Left branch (x ≤ k) constraints usually maintain feasibility
+- **Process**: Standard primal simplex pivot rules (most negative z-coefficient)
+
+**Dual Simplex in Branch & Bound:**
+- **Use when**: Any RHS < 0 (infeasible) regardless of z-row optimality
+- **Common scenario**: Right branch (x ≥ k+1) constraints often create negative RHS
+- **Process**: Dual simplex pivot rules (most negative RHS, dual ratio test)
+
+#### Step-by-Step Decision Process
+
+**After Adding New Constraint to Sub-problem:**
+
+1. **Check RHS Values:**
+   - **All RHS ≥ 0**: Go to Step 2 (check optimality)
+   - **Any RHS < 0**: **Use Dual Simplex** immediately
+
+2. **If Feasible, Check Optimality:**
+   - **All z-coefficients ≥ 0 (max) or ≤ 0 (min)**: **OPTIMAL** → Fathom node
+   - **Has negative z-coefficients (max) or positive (min)**: **Use Primal Simplex**
+
+#### Detailed Examples in Branch & Bound Context
+
+**Left Branch Example: x₁ ≤ 3**
+- Parent solution: x₁ = 3.75, x₂ = 2.25, z = 41.25
+- New constraint: x₁ + s₄ = 3
+- **Result**: Usually maintains feasibility → **Use Primal Simplex**
+
+**Right Branch Example: x₁ ≥ 4**  
+- Parent solution: x₁ = 3.75, x₂ = 2.25, z = 41.25
+- New constraint: -x₁ + e₄ = -4
+- Current x₁ = 3.75 < 4, so constraint violated
+- **Result**: Creates negative RHS → **Use Dual Simplex**
+
+#### Transition Flow Chart
+
+```
+Add Constraint to Sub-problem
+         ↓
+   Check RHS Values
+         ↓
+    Any RHS < 0?
+    ↙         ↘
+   YES         NO
+    ↓           ↓
+DUAL SIMPLEX   Check z-row
+               ↓
+           Optimal?
+           ↙     ↘
+          YES     NO
+           ↓       ↓
+        FATHOM   PRIMAL SIMPLEX
+```
+
+### Phase 4: Fathoming and Tracking
+1. **Evaluate each sub-problem solution** (after dual/primal simplex)
 2. **Apply fathoming rules**
 3. **Update incumbent solution** if better integer solution found
 4. **Continue branching** on remaining active nodes
 
-### Phase 4: Termination
+### Phase 5: Termination
 1. **All nodes fathomed**: Algorithm terminates
 2. **Return incumbent solution** as optimal IP solution
 
@@ -492,8 +658,18 @@ Since s₃ = -¾ < 0, this violates non-negativity. We need dual simplex.
 **Solution**: x₁ = 3, x₂ = 3, z = 39
 **Status**: **INTEGER SOLUTION** → **Incumbent = 39**
 
-#### Sub-Problem 2: x₁ ≥ 4
-**Add constraint**: x₁ - e₃ = 4
+#### Sub-Problem 2: x₁ ≥ 4 - CORRECT CONSTRAINT CONVERSION
+
+**Step-by-Step Constraint Addition:**
+1. **Original branching constraint**: x₁ ≥ 4
+2. **Add excess variable**: x₁ - e₃ = 4  
+3. **For dual simplex format**: -x₁ + e₃ = -4
+4. **Interpretation**: Current solution x₁ = 3¾ violates constraint by ¼ unit
+
+**Why negative RHS?**
+- Current x₁ = 3¾ < 4 (constraint violated)
+- RHS = -4 indicates infeasibility  
+- Dual simplex will restore feasibility
 
 **After dual simplex (T-4)**:
 | T-4 | x₁ | x₂  | s₁ | s₂ | e₃  | rhs |

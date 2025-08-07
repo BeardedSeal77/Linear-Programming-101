@@ -47,15 +47,48 @@ Unlike the Primal Simplex which starts feasible but non-optimal, the Dual Simple
 
 ---
 
-## Canonical Form for Dual Simplex
+## Canonical Form for Dual Simplex - Complete Guide
 
-### Conversion Rules
+### Why Dual Simplex Creates Negative RHS Values
 
-#### For ≥ Constraints (Most Common):
-**Original**: ax ≥ b
-1. **Subtract excess variable**: ax - e = b
-2. **Multiply by -1**: -ax + e = -b
-3. **Result**: Excess variable enters as basic variable with negative RHS
+**Key Concept**: Dual Simplex handles problems that start optimal but infeasible (negative RHS values). This typically occurs with ≥ constraints in minimization problems.
+
+### Step-by-Step Canonical Conversion for Dual Simplex
+
+#### Step 1: Identify When to Use Dual Simplex
+- **Minimization problems** with mostly ≥ constraints
+- **Problems resulting in negative RHS** after standard conversion
+- **Sensitivity analysis** when adding constraints creates infeasibility
+
+#### Step 2: Handle ≥ Constraints (Creates Negative RHS)
+
+**Method 1 - Direct Excess Addition:**
+- **Original**: x₁ + x₂ ≥ 10
+- **Add excess**: x₁ + x₂ - e₁ = 10
+- **Problem**: e₁ starts basic with positive value, but constraint may be violated
+
+**Method 2 - Dual Simplex Standard (Preferred):**
+- **Original**: x₁ + x₂ ≥ 10  
+- **Step 2a**: Add excess: x₁ + x₂ - e₁ = 10
+- **Step 2b**: Multiply by -1: -x₁ - x₂ + e₁ = -10
+- **Result**: e₁ becomes basic variable with RHS = -10 (negative!)
+- **Interpretation**: Constraint is currently violated by 10 units
+
+#### Step 3: Handle ≤ Constraints (Standard Slack)
+- **Original**: 2x₁ + 3x₂ ≤ 15
+- **Add slack**: 2x₁ + 3x₂ + s₁ = 15  
+- **Result**: s₁ starts basic with positive RHS (feasible)
+
+#### Step 4: Creating W-Equation for Dual Simplex
+
+**For Minimization** (most common with dual simplex):
+- **Original**: Minimize z = 8x₁ + 12x₂
+- **W-equation**: W + 8x₁ + 12x₂ + 0e₁ + 0s₁ = 0
+- **Tableau row**: [8, 12, 0, 0, 0] (positive for minimization)
+
+**Alternative**: Convert to maximization first
+- **Convert**: Maximize z = -8x₁ - 12x₂  
+- **W-equation**: W - (-8)x₁ - (-12)x₂ = 0 → W + 8x₁ + 12x₂ = 0
 
 #### For ≤ Constraints:
 **Original**: ax ≤ b
