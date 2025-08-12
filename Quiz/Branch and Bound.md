@@ -35,16 +35,58 @@ Captain America needs to select supplies for transport. Each supply can be taken
 
 ## Step 2: Calculate Upper Bound using Fractional Knapsack
 
-Fill knapsack in ratio order until capacity is reached:
+**Goal:** Fill knapsack by taking items in ratio order (best ratios first) until we reach capacity of 40.
 
-1. Take x3 = 1: Weight = 6, Worth = 3, Remaining capacity = 40-6 = 34
-2. Take x6 = 1: Weight = 6+10 = 16, Worth = 3+4 = 7, Remaining capacity = 40-16 = 24  
-3. Take x2 = 1: Weight = 16+8 = 24, Worth = 7+3 = 10, Remaining capacity = 40-24 = 16
-4. Take x4 = 1: Weight = 24+14 = 38, Worth = 10+5 = 15, Remaining capacity = 40-38 = 2
-5. **x5 needs 10 but only 2 remaining** → Take x5 = 2/10 = 0.2: Weight = 38+2 = 40, Worth = 15+(0.2×2) = 15.4
-6. **x1 needs 11 but 0 remaining** → Cannot take any of x1
+**Step-by-step filling:**
 
-**Upper Bound = 15.4** (matches LP relaxation from optimal table)
+### Step 1: Take x3 (Food rations) completely
+- Take: x3 = 1 (full item)
+- Weight used: 6
+- Worth gained: 3
+- **Total weight so far: 6**
+- **Total worth so far: 3** 
+- **Remaining capacity: 40 - 6 = 34**
+
+### Step 2: Take x6 (Tents) completely  
+- Take: x6 = 1 (full item)
+- Weight used: 10
+- Worth gained: 4
+- **Total weight so far: 6 + 10 = 16**
+- **Total worth so far: 3 + 4 = 7**
+- **Remaining capacity: 40 - 16 = 24**
+
+### Step 3: Take x2 (Ammunition) completely
+- Take: x2 = 1 (full item)  
+- Weight used: 8
+- Worth gained: 3
+- **Total weight so far: 16 + 8 = 24**
+- **Total worth so far: 7 + 3 = 10**
+- **Remaining capacity: 40 - 24 = 16**
+
+### Step 4: Take x4 (Weapons) completely
+- Take: x4 = 1 (full item)
+- Weight used: 14  
+- Worth gained: 5
+- **Total weight so far: 24 + 14 = 38**
+- **Total worth so far: 10 + 5 = 15**
+- **Remaining capacity: 40 - 38 = 2**
+
+### Step 5: Take x5 (Water) partially
+- x5 needs weight 10, but we only have 2 capacity left
+- Take: x5 = 2/10 = 0.2 (partial item)
+- Weight used: 2 (all remaining capacity)
+- Worth gained: 0.2 × 2 = 0.4
+- **Total weight so far: 38 + 2 = 40** (knapsack full!)
+- **Total worth so far: 15 + 0.4 = 15.4**
+- **Remaining capacity: 40 - 40 = 0**
+
+### Step 6: Cannot take x1 (Medical supplies)
+- x1 needs weight 11, but we have 0 capacity left
+- Take: x1 = 0
+
+**Final fractional knapsack solution:**
+- x1 = 0, x2 = 1, x3 = 1, x4 = 1, x5 = 0.2, x6 = 1
+- **Upper Bound = 15.4** (this is our maximum possible Z value)
 
 ## Step 3: Branch & Bound Tree
 
