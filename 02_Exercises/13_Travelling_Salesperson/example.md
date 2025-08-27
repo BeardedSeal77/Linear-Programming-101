@@ -18,7 +18,7 @@ Gandalf the Grey lives in Gondor, Middle Earth. He is responsible for the commun
 
 ### Decision Variables
 
-x_ij = 1 if Gandalf leaves city i and travels next to city j, 0 otherwise
+xij = 1 if Gandalf leaves city i and travels next to city j, 0 otherwise
 
 Where:
 - i, j ∈ {1, 2, 3, 4, 5}
@@ -57,8 +57,10 @@ x₅₁ + x₅₂ + x₅₃ + x₅₄ = 1  (Leave Rohan)
 
 **Sign restrictions:**
 ```
-x_ij ∈ {0, 1} for all i, j
+xij ∈ {0, 1} for all i, j
 ```
+
+<div style="page-break-before: always;"></div>
 
 ## Subtour Elimination Constraints
 
@@ -74,14 +76,14 @@ This would satisfy all the arrival/departure constraints but wouldn't give us a 
 
 **Additional Decision Variables:**
 ```
-U_i = position of city i in the tour sequence
+Ui = position of city i in the tour sequence
 U₁ = 1 (Gondor is always position 1)
-2 ≤ U_i ≤ 5 for i = 2, 3, 4, 5
+2 ≤ Ui ≤ 5 for i = 2, 3, 4, 5
 ```
 
 **Subtour Elimination Constraints:**
 ```
-U_i - U_j + 5x_ij ≤ 4  for all pairs i,j (excluding city 1)
+Ui - Uj + 5xij ≤ 4  for all pairs i,j (excluding city 1)
 ```
 
 ### How It Works: Breaking Down U₃ - U₄ + 5x₃₄ ≤ 4
@@ -97,6 +99,8 @@ U₃ - U₄ + 5 ≤ 4
 U₃ ≤ U₄ - 1
 ```
 This forces city 3 to come **before** city 4 in the sequence.
+
+<div style="page-break-before: always;"></div>
 
 ### How Constraint Pairs Prevent Subtours
 
@@ -117,7 +121,7 @@ Therefore, we can't have both x₃₄ = 1 and x₄₃ = 1.
 ### Complete Subtour Elimination Constraints
 
 ```
-U₁ = 1, 2 ≤ U_i ≤ 5 for i = 2,3,4,5
+U₁ = 1, 2 ≤ Ui ≤ 5 for i = 2,3,4,5
 
 U₂ - U₃ + 5x₂₃ ≤ 4    U₂ - U₄ + 5x₂₄ ≤ 4    U₂ - U₅ + 5x₂₅ ≤ 4
 U₃ - U₂ + 5x₃₂ ≤ 4    U₃ - U₄ + 5x₃₄ ≤ 4    U₃ - U₅ + 5x₃₅ ≤ 4
@@ -126,3 +130,5 @@ U₅ - U₂ + 5x₅₂ ≤ 4    U₅ - U₃ + 5x₅₃ ≤ 4    U₅ - U₄ + 5x
 ```
 
 Note: No constraints involve U₁ since it's fixed at 1.
+
+<div style="page-break-before: always;"></div>
